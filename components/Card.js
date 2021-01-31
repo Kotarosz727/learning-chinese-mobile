@@ -10,17 +10,7 @@ import { StyleSheet, Text, View, FlatList } from "react-native";
 import Content from "./content";
 import ChineseInterator from "../function/ChineseInterator";
 
-export default function card() {
-  const [data, setData] = useState([]);
-
-  const getData = async () => {
-    const res = (await new ChineseInterator().fetchLists()) ?? [];
-    setData(res);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+export default function card({data}) {
 
   return (
     <View>
