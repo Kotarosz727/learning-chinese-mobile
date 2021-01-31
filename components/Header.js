@@ -1,15 +1,28 @@
 import React from "react";
-import { Button, ThemeProvider, Header } from "react-native-elements";
+import { Button, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-export default function header() {
+function HomeScreen() {
   return (
-    <SafeAreaProvider>
-      <Header
-        leftComponent={{ icon: "menu", color: "#fff" }}
-        centerComponent={{ text: "MY TITLE", style: { color: "#fff" } }}
-        rightComponent={{ icon: "home", color: "#fff" }}
-      />
-    </SafeAreaProvider>
+    <View>
+      <Text style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>Home Screen</Text>
+    </View>
   );
 }
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+export default App;

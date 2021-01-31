@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
+import Card from "./Card";
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Button, ThemeProvider, Header } from "react-native-elements";
+import DrawerNavigator from "./DrawerNavigator";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
-import Card from "./components/Card";
 
-export default function App() {
-  const Drawer = createDrawerNavigator();
+export default function StackNavigator() {
   const HomeStack = createStackNavigator();
 
-  function HomeScreen({ navigation }) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Card />
-      </View>
-    );
-  }
+  
 
   function HomeStackScreen({ navigation }) {
     return (
@@ -33,9 +27,7 @@ export default function App() {
           headerLeft: () => (
             <Icon5
               name="bars"
-              size={23}
-              color={"white"}
-              style={{marginLeft:13}}
+              size={25}
               onPress={() => navigation.openDrawer()}
             />
           ),
@@ -46,12 +38,5 @@ export default function App() {
     );
   }
 
-  return (
-    <NavigationContainer>
-      <Drawer.Navigator>
-        <Drawer.Screen name="Card" component={HomeStackScreen} />
-        {/* <Drawer.Screen name="Details" component={DetailsScreen} /> */}
-      </Drawer.Navigator>
-    </NavigationContainer>
-  );
+  return HomeStackScreen;
 }
