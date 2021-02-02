@@ -6,29 +6,15 @@ import {
   Icon,
   TouchableOpacity,
 } from "react-native-elements";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList ,Animated } from "react-native";
 import Content from "./content";
-import ChineseInterator from "../function/ChineseInterator";
 
-export default function card({data}) {
-
+export default function card({ data }) {
   return (
-    <View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Card
-            containerStyle={{
-              height: 200,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Content item={item} />
-          </Card>
-        )}
-      />
-    </View>
+    <FlatList
+      keyExtractor={(item, index) => index.toString()}
+      data={data}
+      renderItem={({ item }) => <Content item={item} />}
+    />
   );
 }
