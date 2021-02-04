@@ -14,7 +14,7 @@ export default function card({ data }) {
     <FlatList
       keyExtractor={(item, index) => index.toString()}
       data={data}
-      renderItem={({ item }) => <Content item={item} />}
+      renderItem={({ item }) => <Content item={item}/>}
     />
   );
 }

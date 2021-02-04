@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default class ChineseInterator {
   url_fetchAll: string;
   url_fetchFavorite: string;
@@ -96,6 +97,67 @@ export default class ChineseInterator {
       );
       return ret_arr;
     }
+  };
+
+  public getAllAsyncStorage = async () => {
+    try {
+      const allKeys = await this.getAllKeys();
+      const ret_arr: any = [];
+      await allKeys?.map(async (v) => {
+        const favorite: [] = await this.getAsyncStorageItem(v);
+        ret_arr.push(favorite);
+      });
+      return ret_arr;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  public storeDataToAsyncStorage = async (value: any) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(value.japanese, jsonValue);
+      console.log("OK");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  public removeDataFromAsyncStorage = async (value: string) => {
+    try {
+      await AsyncStorage.removeItem(value);
+    } catch (e) {
+      // remove error
+    }
+    console.log("Done.");
+  };
+
+  public getAsyncStorageItem = async (value: string) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(value);
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch (e) {
+      console.log("getAsyncStorageItem error:", e);
+    }
+  };
+
+  public getAllKeys = async () => {
+    try {
+      const mykeys: string[] = await AsyncStorage.getAllKeys();
+      return mykeys;
+    } catch (e) {
+      // read key error
+    }
+  };
+
+  public clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      // clear error
+    }
+
+    console.log("Done.");
   };
 
   // public fetchNotes = async (url, userid): Promise<[] | null> => {

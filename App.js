@@ -17,27 +17,27 @@ import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import * as WebBrowser from "expo-web-browser";
-// Amplify.configure(awsconfig);
+Amplify.configure(awsconfig);
 
-async function urlOpener(url, redirectUrl) {
-  const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
-    url,
-    redirectUrl
-  );
+// async function urlOpener(url, redirectUrl) {
+//   const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
+//     url,
+//     redirectUrl
+//   );
 
-  if (type === "success" && Platform.OS === "ios") {
-    WebBrowser.dismissBrowser();
-    return Linking.openURL(newUrl);
-  }
-}
+//   if (type === "success" && Platform.OS === "ios") {
+//     WebBrowser.dismissBrowser();
+//     return Linking.openURL(newUrl);
+//   }
+// }
 
-Amplify.configure({
-  ...awsconfig,
-  oauth: {
-    ...awsconfig.oauth,
-    urlOpener,
-  },
-});
+// Amplify.configure({
+//   ...awsconfig,
+//   oauth: {
+//     ...awsconfig.oauth,
+//     urlOpener,
+//   },
+// });
 
 export default function App() {
   const [username, setUsername] = useState("hi");
@@ -46,14 +46,44 @@ export default function App() {
   const [favorite, setFavorite] = useState([]);
 
   const getData = async () => {
-    console.log("getting data");
     const res = (await new ChineseInterator().fetchLists()) ?? [];
+    if (!res) {
+      return <Text>No data</Text>;
+    }
+    // const favoritKeyArray = await new ChineseInterator().getAllKeys();
+    // if (favoritKeyArray) {
+    //   res.map((v) => {
+    //     if (favoritKeyArray.findIndex((item) => item === v.japanese) >= 0) {
+    //       v.bookmark = true;
+    //     }
+    //   });
+    // }
     setData(res);
   };
 
+  const checkIsFavorite = async () => {
+    //make bookmark true if it is bookmarked
+    const favoritKeyArray = await new ChineseInterator().getAllKeys();
+    if (favoritKeyArray) {
+      data.map((v) => {
+        if (favoritKeyArray.findIndex((item) => item === v.japanese) >= 0) {
+          v.bookmark = true;
+        }
+      });
+    }
+    const updated = [...data];
+    setData(updated);
+  };
+
   const getfavorites = async () => {
-    const res = (await new ChineseInterator().fetchFavorites(userid)) ?? [];
-    setFavorite(res);
+    // const res = await new ChineseInterator().getAllAsyncStorage();
+    const res = await new ChineseInterator().fetchFavorites(userid);
+    if (res) {
+      res.map((v) => {
+        v.bookmark = true;
+      });
+      setFavorite(res);
+    }
   };
 
   useEffect(() => {
@@ -63,30 +93,28 @@ export default function App() {
         setUserid(user.attributes.sub);
       })
       .catch((err) => console.log("error", err));
-    console.log("mountend!!!!");
+    console.log("mountend");
 
     let mounted = true;
-
     if (mounted) {
       getData();
+      // getfavorites();
     }
-
     return () => {
       mounted = false;
     };
   }, []);
 
-  useEffect(() => {
-    let mounted = true;
-
-    if (mounted) {
-      getfavorites();
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, [userid]);
+  // useEffect(() => {
+  //   let mounted = true;
+  //   console.log("getting aynyc storage data");
+  //   if (mounted) {
+  //     getfavorites();
+  //   }
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, [data]);
 
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
@@ -94,22 +122,27 @@ export default function App() {
   const FavoriteStack = createStackNavigator();
 
   function HomeScreen({ navigation }) {
+    useEffect(() => {
+      let mounted = true;
+      navigation.addListener("focus", () => {
+        if (mounted) {
+          getData();
+        }
+      });
+      return () => {
+        mounted = false;
+      };
+    }, []);
+
     return <Card data={data} />;
   }
 
   function FavoriteScreen({ navigation }) {
-    // useEffect(() => {
-    //   let mounted = true;
-    //   navigation.addListener("focus", () => {
-    //     if (mounted) {
-    //       getfavorites();
-    //     }
-    //   });
-    //   return () => {
-    //     mounted = false;
-    //   };
-    // }, [userid]);
-
+    useEffect(() => {
+      navigation.addListener("focus", () => {
+        getfavorites();
+      });
+    });
     return <Card data={favorite} />;
   }
 
@@ -233,7 +266,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator>
-        <Drawer.Screen name="Card" component={HomeStackScreen} />
+        <Drawer.Screen name="Home" component={HomeStackScreen} />
         <Drawer.Screen name="SignIn" component={SignInStackScreen} />
         <Drawer.Screen name="Favorite" component={FavoriteStackScreen} />
       </Drawer.Navigator>
