@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import React, { useState, useContext } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
-import { render } from "react-dom";
 
-export default function content({ item }) {
+export default function content({ item, userid }) {
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
-
   async function setFavoriteItem(value) {
-    new ChineseInterator().storeDataToAsyncStorage(value);
+    new ChineseInterator().postFavorite(value, userid);
     setBookmarkStatus(true);
   }
 
@@ -70,11 +68,7 @@ export default function content({ item }) {
     toggleCard(value);
   };
 
-  return (
-    <>
-      {front ? frontCard(item) : backCard(item)}
-    </>
-  );
+  return <>{front ? frontCard(item) : backCard(item)}</>;
 }
 
 const styles = StyleSheet.create({

@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Linking,
-  Platform,
-} from "react-native";
+import { Text, View } from "react-native";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
-import Card from "./components/data";
+import Data from "./components/data";
 import { Button, ThemeProvider, Header } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
@@ -126,6 +119,7 @@ export default function App() {
       let mounted = true;
       navigation.addListener("focus", () => {
         if (mounted) {
+          console.log("focus homescreen");
           getData();
         }
       });
@@ -134,7 +128,7 @@ export default function App() {
       };
     }, []);
 
-    return <Card data={data} />;
+    return <Data data={data} userid={userid} />;
   }
 
   function FavoriteScreen({ navigation }) {
@@ -143,7 +137,7 @@ export default function App() {
         getfavorites();
       });
     });
-    return <Card data={favorite} />;
+    return <Data data={favorite} userid={userid} />;
   }
 
   function SignInScreen({ navigation }) {
@@ -160,7 +154,6 @@ export default function App() {
           style={{ width: 200, marginBottom: 1 }}
         />
         <Text>Create account</Text>
-        {/* <Card /> */}
       </View>
     );
   }

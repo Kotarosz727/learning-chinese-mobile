@@ -1,11 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default class ChineseInterator {
   url_fetchAll: string;
+  url_postFavorite: string;
   url_fetchFavorite: string;
 
   constructor() {
     this.url_fetchAll =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
+    this.url_postFavorite = this.url_fetchAll;  
     this.url_fetchFavorite =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
   }
@@ -22,28 +24,28 @@ export default class ChineseInterator {
     }
   };
 
-  // public postFavorite = async (data, userid, url): Promise<void> => {
-  //     const mappeddata = {
-  //         userid: userid,
-  //         chinese: data.chinese,
-  //         japanese: data.japanese,
-  //         pinin: data.pinin,
-  //         type: "favorite",
-  //     };
-  //     // console.log(mappeddata);
-  //     try {
-  //         const res = await fetch(url, {
-  //             method: "POST",
-  //             // mode: "no-cors",
-  //             headers: {
-  //                 "content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify(mappeddata),
-  //         });
-  //     } catch (e) {
-  //         console.log("got error", e);
-  //     }
-  // };
+  public postFavorite = async (data:any, userid:string): Promise<void> => {
+      const mappeddata = {
+          userid: userid,
+          chinese: data.chinese,
+          japanese: data.japanese,
+          pinin: data.pinin,
+          type: "favorite",
+      };
+      console.log('posting favorite');
+      try {
+          const res = await fetch(this.url_postFavorite, {
+              method: "POST",
+              // mode: "no-cors",
+              headers: {
+                  "content-Type": "application/json",
+              },
+              body: JSON.stringify(mappeddata),
+          });
+      } catch (e) {
+          console.log("got error", e);
+      }
+  };
 
   // public postNote = async (data, userid, url) => {
   //     const mappeddata = {

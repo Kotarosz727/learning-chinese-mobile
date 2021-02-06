@@ -10,7 +10,7 @@ import { StyleSheet, Text, View, FlatList, Animated } from "react-native";
 import Content from "./content";
 import IconAnt from "react-native-vector-icons/AntDesign";
 
-export default function data({ data }) {
+export default function data({ data, userid }) {
   const perPage = 20;
   const [endPage, setEndPage] = useState(20);
   const [pageData, setPageData] = useState(data);
@@ -26,7 +26,6 @@ export default function data({ data }) {
   function goNext() {
     setEndPage(endPage + perPage);
   }
-  console.log(data);
   function footer() {
     return (currentPage > data.length) | (data.length <= 20) ? (
       ""
@@ -45,7 +44,7 @@ export default function data({ data }) {
       ListFooterComponent={() => footer()}
       keyExtractor={(item, index) => index.toString()}
       data={pageData}
-      renderItem={({ item }) => <Content item={item} />}
+      renderItem={({ item }) => <Content item={item} userid={userid} />}
     />
   );
 }
