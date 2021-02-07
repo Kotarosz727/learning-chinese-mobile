@@ -1,21 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default class ChineseInterator {
-  url_fetchAll: string;
+  url_fetch_list: string;
   url_postFavorite: string;
   url_fetchFavorite: string;
 
   constructor() {
-    this.url_fetchAll =
+    this.url_fetch_list =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
-    this.url_postFavorite = this.url_fetchAll;  
+    this.url_postFavorite = "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";  
     this.url_fetchFavorite =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
   }
 
-  public fetchLists = async (): Promise<[] | null> => {
+  public fetchLists = async (query:string): Promise<[] | null> => {
     console.log("fetchingList");
+    const url = this.url_fetch_list + '?info=' + query
     try {
-      const res = await fetch(this.url_fetchAll, { method: "GET" });
+      const res = await fetch(url, { method: "GET" });
       const sentences = await res.json();
       return sentences.Items;
     } catch (e) {

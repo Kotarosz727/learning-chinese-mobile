@@ -39,13 +39,13 @@ export default function App() {
   const [favorite, setFavorite] = useState([]);
   const [render, setRender] = useState(true);
 
-  const getData = async () => {
-    const res = (await new ChineseInterator().fetchLists()) ?? [];
+  const getData = async (query) => {
+    const res = (await new ChineseInterator().fetchLists(query)) ?? [];
     if (!res) {
       return <Text>No data</Text>;
     }
     if (userid) {
-      checkIsFavorite(data);
+      checkIsFavorite(res);
     } else {
       setData(res);
     }
@@ -67,7 +67,8 @@ export default function App() {
       });
     }
     console.log("check if favorite");
-    setRender(!render);
+    // setRender(!render);
+    setData(value)
   };
 
   const getfavorites = async () => {
@@ -89,15 +90,6 @@ export default function App() {
       })
       .catch((err) => console.log("error", err));
     console.log("mountend");
-
-    let mounted = true;
-    if (mounted) {
-      getData();
-      // getfavorites();
-    }
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   // useEffect(() => {
@@ -133,13 +125,14 @@ export default function App() {
       navigation.addListener("focus", () => {
         if (mounted) {
           console.log("focus homescreen");
-          getData();
+          const query = "level1";
+          getData(query);
         }
       });
       return () => {
         mounted = false;
       };
-    }, [userid]);
+    }, []);
 
     return <Data data={data} userid={userid} />;
   }
@@ -199,7 +192,7 @@ export default function App() {
               username ? (
                 <Text style={{ color: "white" }}>您好!{username}</Text>
               ) : (
-                ""
+                <Text></Text>
               ),
           })}
         />

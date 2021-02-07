@@ -28,11 +28,11 @@ export default function data({ data, userid }) {
   }
   function footer() {
     return (currentPage > data.length) | (data.length <= 20) ? (
-      ""
+      <Text></Text>
     ) : (
       <IconAnt
         onPress={() => goNext()}
-        size={30}
+        size={40}
         name="downcircle"
         style={styles.rightIcon}
       />
@@ -52,7 +52,7 @@ export default function data({ data, userid }) {
 const styles = StyleSheet.create({
   rightIcon: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 40,
     textAlign: "center",
   },
 });
