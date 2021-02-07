@@ -34,38 +34,40 @@ Amplify.configure(awsconfig);
 
 export default function App() {
   const [username, setUsername] = useState("hi");
-  const [userid, setUserid] = useState("");
+  const [userid, setUserid] = useState(null);
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
+  const [render, setRender] = useState(true);
 
   const getData = async () => {
     const res = (await new ChineseInterator().fetchLists()) ?? [];
     if (!res) {
       return <Text>No data</Text>;
     }
-    // const favoritKeyArray = await new ChineseInterator().getAllKeys();
-    // if (favoritKeyArray) {
-    //   res.map((v) => {
-    //     if (favoritKeyArray.findIndex((item) => item === v.japanese) >= 0) {
-    //       v.bookmark = true;
-    //     }
-    //   });
-    // }
-    setData(res);
+    if (userid) {
+      checkIsFavorite(data);
+    } else {
+      setData(res);
+    }
   };
 
-  const checkIsFavorite = async () => {
+  const checkIsFavorite = async (value) => {
     //make bookmark true if it is bookmarked
-    const favoritKeyArray = await new ChineseInterator().getAllKeys();
-    if (favoritKeyArray) {
-      data.map((v) => {
-        if (favoritKeyArray.findIndex((item) => item === v.japanese) >= 0) {
+    const favoriteItems = await new ChineseInterator().fetchFavorites(userid);
+
+    if (favoriteItems) {
+      const bookmarked = [];
+      favoriteItems.map((r) => {
+        bookmarked.push(r.chinese);
+      });
+      value.map((v) => {
+        if (bookmarked.findIndex((item) => item === v.chinese) >= 0) {
           v.bookmark = true;
         }
       });
     }
-    const updated = [...data];
-    setData(updated);
+    console.log("check if favorite");
+    setRender(!render);
   };
 
   const getfavorites = async () => {
@@ -100,21 +102,32 @@ export default function App() {
 
   // useEffect(() => {
   //   let mounted = true;
-  //   console.log("getting aynyc storage data");
-  //   if (mounted) {
-  //     getfavorites();
+  //   if (mounted && userid && data) {
+  //     checkIsFavorite();
   //   }
   //   return () => {
   //     mounted = false;
   //   };
-  // }, [data]);
+  // }, [userid, data]);
 
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
+  const Level1Stack = createStackNavigator();
   const SignInStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
 
   function HomeScreen({ navigation }) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Button
+          title="Go to Level1"
+          onPress={() => navigation.navigate("Level1")}
+        />
+      </View>
+    );
+  }
+
+  function Level1Screen({ navigation }) {
     useEffect(() => {
       let mounted = true;
       navigation.addListener("focus", () => {
@@ -126,7 +139,7 @@ export default function App() {
       return () => {
         mounted = false;
       };
-    }, []);
+    }, [userid]);
 
     return <Data data={data} userid={userid} />;
   }
@@ -134,6 +147,7 @@ export default function App() {
   function FavoriteScreen({ navigation }) {
     useEffect(() => {
       navigation.addListener("focus", () => {
+        console.log("focus favorite");
         getfavorites();
       });
     });
@@ -160,34 +174,48 @@ export default function App() {
 
   function HomeStackScreen({ navigation }) {
     return (
-      <HomeStack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#03dffc",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-          headerLeft: () => (
-            <Icon5
-              name="bars"
-              size={23}
-              color={"white"}
-              style={{ marginLeft: 13 }}
-              onPress={() => navigation.openDrawer()}
-            />
-          ),
-          headerRight: () =>
-            username ? (
-              <Text style={{ color: "white" }}>您好!{username}</Text>
-            ) : (
-              ""
+      <HomeStack.Navigator initialRouteName="Home">
+        <HomeStack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={({ route }) => ({
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerLeft: () => (
+              <Icon5
+                name="bars"
+                size={23}
+                color={"white"}
+                style={{ marginLeft: 13 }}
+                onPress={() => navigation.openDrawer()}
+              />
             ),
-        }}
-      >
-        <HomeStack.Screen name="Home" component={HomeScreen} />
+            headerRight: () =>
+              username ? (
+                <Text style={{ color: "white" }}>您好!{username}</Text>
+              ) : (
+                ""
+              ),
+          })}
+        />
+        <HomeStack.Screen
+          name="Level1"
+          component={Level1Screen}
+          options={({ route }) => ({
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
       </HomeStack.Navigator>
     );
   }
@@ -213,12 +241,6 @@ export default function App() {
               onPress={() => navigation.openDrawer()}
             />
           ),
-          headerRight: () =>
-            username ? (
-              <Text style={{ color: "white" }}>您好!{username}</Text>
-            ) : (
-              ""
-            ),
         }}
       >
         <SignInStack.Screen name="SignIn" component={SignInScreen} />
@@ -247,8 +269,6 @@ export default function App() {
               onPress={() => navigation.openDrawer()}
             />
           ),
-
-          headerRight: () => (username ? <Text>您好! {username}</Text> : ""),
         }}
       >
         <FavoriteStack.Screen name="Favorite" component={FavoriteScreen} />
