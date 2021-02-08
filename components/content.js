@@ -28,10 +28,10 @@ export default function content({ item, userid }) {
   const bookmarkEmpty = (
     <Icon name="bookmark-o" size={25} onPress={() => setFavoriteItem(item)} />
   );
-  const syncAlt = (
+  const arrowRight = (
     <Icon5
-      name="sync-alt"
-      style={styles.syncAlt}
+      name="arrow-right"
+      style={styles.arrowRight}
       onPress={() => handleToggle(!front)}
       size={25}
     />
@@ -39,28 +39,29 @@ export default function content({ item, userid }) {
   const frontCard = (item) => {
     return (
       <View style={styles.item}>
-        <Text style={styles.content}>{item.japanese}</Text>
+        <Text style={styles.content} onPress={() => handleToggle(!front)}>
+          {item.japanese}
+        </Text>
         <Text style={styles.bookmark}>
           {bookmarkStatus === true ? bookmark : bookmarkEmpty}
         </Text>
-        <Text style={styles.syncAlt}>{syncAlt}</Text>
       </View>
     );
   };
   const backCard = (item) => {
     return (
       <View style={styles.item}>
+        <Text style={styles.content} onPress={() => Speech.speak(item.chinese, { language: "zh" })}>{item.chinese}</Text>
         <Text
-          style={styles.content}
+          style={styles.pinin}
           onPress={() => Speech.speak(item.chinese, { language: "zh" })}
         >
-          {item.chinese}
+          {item.pinin}
         </Text>
-        <Text style={styles.pinin}>{item.pinin}</Text>
         <Text style={styles.bookmark}>
           {bookmarkStatus === true ? bookmark : bookmarkEmpty}
         </Text>
-        <Text style={styles.syncAlt}>{syncAlt}</Text>
+        <Text style={styles.arrowRight}>{arrowRight}</Text>
       </View>
     );
   };
@@ -88,12 +89,12 @@ const styles = StyleSheet.create({
   content: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 30,
+    fontSize: 32,
   },
   pinin: {
-    marginTop: 20,
+    marginTop: 30,
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 20,
   },
   bookmark: {
     position: "absolute",
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     color: "black",
   },
-  syncAlt: {
+  arrowRight: {
     position: "absolute",
     right: 8,
     bottom: 10,

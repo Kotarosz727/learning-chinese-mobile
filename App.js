@@ -116,14 +116,14 @@ export default function App() {
           onPress={() => navigation.navigate("Level1")}
           type="outline"
           raised={true}
-          containerStyle={{marginBottom:10}}
+          containerStyle={{marginBottom:40, width:300}}
         />
         <Button
           title="中国語 Level②"
           onPress={() => navigation.navigate("Level2")}
           type="outline"
           raised={true}
-          containerStyle={{marginBottom:10}}
+          containerStyle={{marginBottom:40, width:300}}
         />
       </View>
     );
@@ -228,6 +228,7 @@ export default function App() {
           name="Level1"
           component={Level1Screen}
           options={({ route }) => ({
+            title: '中国語 Level①',
             headerStyle: {
               backgroundColor: "#03dffc",
             },
@@ -241,6 +242,7 @@ export default function App() {
           name="Level2"
           component={Level2Screen}
           options={({ route }) => ({
+            title: '中国語 Level②',
             headerStyle: {
               backgroundColor: "#03dffc",
             },
