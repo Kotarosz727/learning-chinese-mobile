@@ -4,6 +4,8 @@ import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Data from "./components/data";
 import { Button, ThemeProvider, Header } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
@@ -116,14 +118,14 @@ export default function App() {
           onPress={() => navigation.navigate("Level1")}
           type="outline"
           raised={true}
-          containerStyle={{marginBottom:40, width:300}}
+          containerStyle={{ marginBottom: 40, width: 300 }}
         />
         <Button
           title="中国語 Level②"
           onPress={() => navigation.navigate("Level2")}
           type="outline"
           raised={true}
-          containerStyle={{marginBottom:40, width:300}}
+          containerStyle={{ marginBottom: 40, width: 300 }}
         />
       </View>
     );
@@ -178,16 +180,34 @@ export default function App() {
   function SignInScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Button
+        {/* <Button
           title="FaceBookでログイン"
+          icon={<Icon name="facebook-official" size={20} containerStyle={{paddingRight:10}} reverse={true} color="white" />}
           onPress={() => Auth.federatedSignIn({ provider: "Facebook" })}
           style={{ width: 200, marginBottom: 1 }}
-        />
-        <Button
-          title="Googleでログイン"
-          onPress={() => Auth.federatedSignIn({ provider: "Google" })}
-          style={{ width: 200, marginBottom: 1 }}
-        />
+        /> */}
+        <Icon.Button
+          name="facebook"
+          size={30}
+          backgroundColor="#3b5998"
+          style={{ width: 200 }}
+        >
+          <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
+            FaceBookでログイン
+          </Text>
+        </Icon.Button>
+        <View style={{ marginTop: 30, marginBottom: 30 }}>
+          <Icon.Button
+            name="google"
+            size={30}
+            type="outline"
+            style={{ width: 200 }}
+          >
+            <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
+              Googleでログイン
+            </Text>
+          </Icon.Button>
+        </View>
         <Text>Create account</Text>
       </View>
     );
@@ -200,6 +220,7 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={({ route }) => ({
+            title: "ホーム",
             headerStyle: {
               backgroundColor: "#03dffc",
             },
@@ -228,7 +249,7 @@ export default function App() {
           name="Level1"
           component={Level1Screen}
           options={({ route }) => ({
-            title: '中国語 Level①',
+            title: "中国語 Level①",
             headerStyle: {
               backgroundColor: "#03dffc",
             },
@@ -242,7 +263,7 @@ export default function App() {
           name="Level2"
           component={Level2Screen}
           options={({ route }) => ({
-            title: '中国語 Level②',
+            title: "中国語 Level②",
             headerStyle: {
               backgroundColor: "#03dffc",
             },
@@ -307,7 +328,20 @@ export default function App() {
           ),
         }}
       >
-        <FavoriteStack.Screen name="Favorite" component={FavoriteScreen} />
+        <FavoriteStack.Screen
+          name="Favorite"
+          component={FavoriteScreen}
+          options={({ route }) => ({
+            title: "ブックマーク",
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
       </FavoriteStack.Navigator>
     );
   }
@@ -315,9 +349,27 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={HomeStackScreen} />
-        <Drawer.Screen name="SignIn" component={SignInStackScreen} />
-        <Drawer.Screen name="Favorite" component={FavoriteStackScreen} />
+        <Drawer.Screen
+          name="ホーム"
+          component={HomeStackScreen}
+          options={{
+            drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
+          }}
+        />
+        <Drawer.Screen
+          name="ブックマーク"
+          component={FavoriteStackScreen}
+          options={{
+            drawerIcon: ({}) => <Ionicons name="bookmarks-outline" size={20} />,
+          }}
+        />
+        <Drawer.Screen
+          name="SignIn"
+          component={SignInStackScreen}
+          options={{
+            drawerIcon: ({}) => <Ionicons name="log-in-outline" size={20} />,
+          }}
+        />
       </Drawer.Navigator>
     </NavigationContainer>
   );
