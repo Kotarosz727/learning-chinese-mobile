@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -68,7 +68,7 @@ export default function App() {
     }
     console.log("check if favorite");
     // setRender(!render);
-    setData(value)
+    setData(value);
   };
 
   const getfavorites = async () => {
@@ -112,8 +112,18 @@ export default function App() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Button
-          title="Go to Level1"
+          title="中国語 Level①"
           onPress={() => navigation.navigate("Level1")}
+          type="outline"
+          raised={true}
+          containerStyle={{marginBottom:10}}
+        />
+        <Button
+          title="中国語 Level②"
+          onPress={() => navigation.navigate("Level2")}
+          type="outline"
+          raised={true}
+          containerStyle={{marginBottom:10}}
         />
       </View>
     );
@@ -126,6 +136,24 @@ export default function App() {
         if (mounted) {
           console.log("focus homescreen");
           const query = "level1";
+          getData(query);
+        }
+      });
+      return () => {
+        mounted = false;
+      };
+    }, []);
+
+    return <Data data={data} userid={userid} />;
+  }
+
+  function Level2Screen({ navigation }) {
+    useEffect(() => {
+      let mounted = true;
+      navigation.addListener("focus", () => {
+        if (mounted) {
+          console.log("focus homescreen");
+          const query = "level2";
           getData(query);
         }
       });
@@ -209,6 +237,19 @@ export default function App() {
             },
           })}
         />
+        <HomeStack.Screen
+          name="Level2"
+          component={Level2Screen}
+          options={({ route }) => ({
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
       </HomeStack.Navigator>
     );
   }
@@ -279,3 +320,9 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  HomeButton: {
+    paddingBottom: 10,
+  },
+});
