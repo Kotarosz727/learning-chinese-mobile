@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import { Button, ThemeProvider, Header } from "react-native-elements";
+import { Button, ThemeProvider, Header, Card } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
@@ -35,7 +36,7 @@ Amplify.configure(awsconfig);
 // });
 
 export default function App() {
-  const [username, setUsername] = useState("hi");
+  const [username, setUsername] = useState("");
   const [userid, setUserid] = useState(null);
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
@@ -91,7 +92,7 @@ export default function App() {
         setUserid(user.attributes.sub);
       })
       .catch((err) => console.log("error", err));
-    console.log("mountend");
+    console.log("mounted");
   }, []);
 
   // useEffect(() => {
@@ -107,12 +108,22 @@ export default function App() {
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
   const Level1Stack = createStackNavigator();
+  const TranslateStack = createStackNavigator();
   const SignInStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
 
   function HomeScreen({ navigation }) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ marginTop: 150 }}>
+          {username ? (
+            <Text style={{ marginBottom: 50, fontSize: 25 }}>
+              您好!{username}
+            </Text>
+          ) : (
+            <Text></Text>
+          )}
+        </View>
         <Button
           title="中国語 Level①"
           onPress={() => navigation.navigate("Level1")}
@@ -177,6 +188,58 @@ export default function App() {
     return <Data data={favorite} userid={userid} />;
   }
 
+  function TranslateScreen({ navigation }) {
+    return (
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: 400,
+        }}
+      >
+        <TextInput
+          multiline={true}
+          textAlignVertical={"top"}
+          numberOfLines={10}
+          placeholder={"中国語"}
+          style={{
+            width: 300,
+            borderColor: "gray",
+            borderWidth: 1,
+            marginBottom: 20,
+            marginTop: 20,
+          }}
+          // onChangeText={(text) => onChangeText(text)}
+          // value={value}
+        />
+        <Icon5 name="sync" size={26} />
+        <TextInput
+          multiline={true}
+          textAlignVertical={"top"}
+          numberOfLines={10}
+          placeholder={"日本語"}
+          style={{
+            width: 300,
+            marginTop: 20,
+            borderColor: "gray",
+            borderWidth: 1,
+            marginBottom: 50,
+          }}
+          // onChangeText={(text) => onChangeText(text)}
+          // value={value}
+        />
+        <Ionicons name="add-circle-sharp" size={38} color={"aqua"}/>
+        <View style={{ position: "absolute", right: 50, bottom: 0}}>
+          <Button title="翻訳" />
+        </View>
+        {/* <View style={{ position: "absolute", right: 150, bottom: 0 }}>
+          <Button title="add" />
+        </View> */}
+      </View>
+    );
+  }
+
   function SignInScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -237,12 +300,12 @@ export default function App() {
                 onPress={() => navigation.openDrawer()}
               />
             ),
-            headerRight: () =>
-              username ? (
-                <Text style={{ color: "white" }}>您好!{username}</Text>
-              ) : (
-                <Text></Text>
-              ),
+            // headerRight: () =>
+            //   username ? (
+            //     <Text style={{ color: "white" }}>您好!{username}</Text>
+            //   ) : (
+            //     <Text></Text>
+            //   ),
           })}
         />
         <HomeStack.Screen
@@ -346,6 +409,47 @@ export default function App() {
     );
   }
 
+  function TranslateStackScreen({ navigation }) {
+    return (
+      <TranslateStack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#03dffc",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <Icon5
+              name="bars"
+              size={23}
+              color={"white"}
+              style={{ marginLeft: 13 }}
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        }}
+      >
+        <TranslateStack.Screen
+          name="Translate"
+          component={TranslateScreen}
+          options={({ route }) => ({
+            title: "翻訳",
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
+      </TranslateStack.Navigator>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Drawer.Navigator>
@@ -361,6 +465,13 @@ export default function App() {
           component={FavoriteStackScreen}
           options={{
             drawerIcon: ({}) => <Ionicons name="bookmarks-outline" size={20} />,
+          }}
+        />
+        <Drawer.Screen
+          name="翻訳"
+          component={TranslateStackScreen}
+          options={{
+            drawerIcon: ({}) => <MaterialIcons name="translate" size={20} />,
           }}
         />
         <Drawer.Screen
