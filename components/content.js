@@ -4,8 +4,11 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
+import { useTheme } from "@react-navigation/native";
 
 export default function content({ item, userid }) {
+  const colors = useTheme();
+
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
   async function setFavoriteItem(value) {
     new ChineseInterator().postFavorite(value, userid);
@@ -51,7 +54,12 @@ export default function content({ item, userid }) {
   const backCard = (item) => {
     return (
       <View style={styles.item}>
-        <Text style={styles.content} onPress={() => Speech.speak(item.chinese, { language: "zh" })}>{item.chinese}</Text>
+        <Text
+          style={styles.content}
+          onPress={() => Speech.speak(item.chinese, { language: "zh" })}
+        >
+          {item.chinese}
+        </Text>
         <Text
           style={styles.pinin}
           onPress={() => Speech.speak(item.chinese, { language: "zh" })}
