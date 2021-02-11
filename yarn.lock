@@ -4174,6 +4174,11 @@ chardet@^0.4.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
   integrity sha1-tUc7M9yXxCTl2Y3IfVXU2KKci/I=
 
+chinese-to-pinyin@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/chinese-to-pinyin/-/chinese-to-pinyin-1.3.1.tgz#f525d4bdae5231f67718bacda2a55e5289548015"
+  integrity sha512-QGB9HmbMLh726Aj3QKB5NcjKDgKn5NCLMz8rmPfKuU5FgwmF4NT2ULh5/2G6Z0pWBcagtKBS08ymaJcYSvbbQg==
+
 ci-info@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"

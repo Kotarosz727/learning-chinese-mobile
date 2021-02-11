@@ -12,7 +12,11 @@ import { Button, ThemeProvider, Header, Card } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
+import translateFunction from "./function/translate";
 import * as WebBrowser from "expo-web-browser";
+import Pinyin from "chinese-to-pinyin";
+import * as Speech from "expo-speech";
+
 Amplify.configure(awsconfig);
 
 // async function urlOpener(url, redirectUrl) {
@@ -189,6 +193,31 @@ export default function App() {
   }
 
   function TranslateScreen({ navigation }) {
+    const [translateToJapanese, translateToCheinese] = useState(true);
+    const [text, setText] = useState("");
+    const [translated, setTranslated] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const toggleTranslate = () => {
+      translateToCheinese(!translateToJapanese);
+    };
+
+    const handleTranslate = async () => {
+      const res = await translateFunction(text, translateToJapanese);
+      console.log("res", res);
+
+      if (!translateToJapanese && res) {
+        const chinese = res;
+        const pinyin = Pinyin(chinese);
+        const chineseWithPinyin = chinese + "\n" + pinyin;
+        setTranslated(chineseWithPinyin);
+        setText(chinese);
+      } else {
+        const japanese = res;
+        setTranslated(japanese);
+      }
+    };
+
     return (
       <View
         style={{
@@ -202,7 +231,9 @@ export default function App() {
           multiline={true}
           textAlignVertical={"top"}
           numberOfLines={10}
-          placeholder={"中国語"}
+          editable={true}
+          placeholder={translateToJapanese ? "中国語" : "日本語"}
+          onChangeText={(value) => setText(value)}
           style={{
             width: 300,
             borderColor: "gray",
@@ -210,32 +241,55 @@ export default function App() {
             marginBottom: 20,
             marginTop: 20,
           }}
-          // onChangeText={(text) => onChangeText(text)}
-          // value={value}
         />
-        <Icon5 name="sync" size={26} />
+        {translateToJapanese ? <Text>中国語</Text> : <Text>日本語</Text>}
+        <Ionicons
+          name="swap-vertical-sharp"
+          size={35}
+          onPress={() => toggleTranslate()}
+        />
+        {translateToJapanese ? <Text>日本語</Text> : <Text>中国語</Text>}
+        {translated ? (
+          <View>
+            <Ionicons
+              name="volume-high-outline"
+              size={25}
+              style={{ position: "absolute", right: 120, bottom: 0 }}
+              onPress={() => Speech.speak(text, { language: "zh" })}
+            />
+          </View>
+        ) : (
+          <Text></Text>
+        )}
+
         <TextInput
           multiline={true}
           textAlignVertical={"top"}
           numberOfLines={10}
-          placeholder={"日本語"}
+          editable={false}
+          placeholder={translateToJapanese ? "日本語" : "中国語"}
           style={{
             width: 300,
             marginTop: 20,
             borderColor: "gray",
             borderWidth: 1,
-            marginBottom: 50,
+            marginBottom: 25,
           }}
-          // onChangeText={(text) => onChangeText(text)}
-          // value={value}
+          value={translated}
         />
-        <Ionicons name="add-circle-sharp" size={38} color={"aqua"}/>
-        <View style={{ position: "absolute", right: 50, bottom: 0}}>
-          <Button title="翻訳" />
+        {translated ? (
+          <>
+            <View>
+              <Ionicons name="add-circle-sharp" size={45} color={"#c92a47"} />
+            </View>
+          </>
+        ) : (
+          <Text></Text>
+        )}
+        <View style={{ position: "absolute", right: 50, bottom: 0 }}>
+          <Button title="翻訳" onPress={() => handleTranslate()} />
         </View>
-        {/* <View style={{ position: "absolute", right: 150, bottom: 0 }}>
-          <Button title="add" />
-        </View> */}
+        
       </View>
     );
   }
