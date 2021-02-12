@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import { Button, ThemeProvider, Header, Card } from "react-native-elements";
+import { Button, Overlay, Input } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
@@ -195,26 +195,34 @@ export default function App() {
   function TranslateScreen({ navigation }) {
     const [translateToJapanese, translateToCheinese] = useState(true);
     const [text, setText] = useState("");
+    const [chinese, setChinese] = useState("");
+    const [japanese, setJapanese] = useState("");
     const [translated, setTranslated] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [pinyin, setPinyin] = useState("");
 
     const toggleTranslate = () => {
       translateToCheinese(!translateToJapanese);
     };
 
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
+
     const handleTranslate = async () => {
       const res = await translateFunction(text, translateToJapanese);
-      console.log("res", res);
 
       if (!translateToJapanese && res) {
-        const chinese = res;
-        const pinyin = Pinyin(chinese);
-        const chineseWithPinyin = chinese + "\n" + pinyin;
+        const chineseWithPinyin = res + "\n" + Pinyin(res);
         setTranslated(chineseWithPinyin);
-        setText(chinese);
+        setChinese(res);
+        setJapanese(text);
+        setPinyin(Pinyin(res));
       } else {
-        const japanese = res;
-        setTranslated(japanese);
+        setTranslated(res);
+        setChinese(text);
+        setJapanese(res);
+        setPinyin(Pinyin(text));
       }
     };
 
@@ -227,6 +235,18 @@ export default function App() {
           width: 400,
         }}
       >
+        <Overlay
+          isVisible={visible}
+          onBackdropPress={() => toggleOverlay()}
+          overlayStyle={{ display:"flex", width:300 }}
+        >
+          <View>
+            <Input value={japanese} />
+            <Input value={chinese} />
+            <Input value={pinyin} />
+            <Button title="単語帳へ追加" style={{ marginTop: 5 }} />
+          </View>
+        </Overlay>
         <TextInput
           multiline={true}
           textAlignVertical={"top"}
@@ -255,7 +275,7 @@ export default function App() {
               name="volume-high-outline"
               size={25}
               style={{ position: "absolute", right: 120, bottom: 0 }}
-              onPress={() => Speech.speak(text, { language: "zh" })}
+              onPress={() => Speech.speak(chinese, { language: "zh" })}
             />
           </View>
         ) : (
@@ -280,16 +300,20 @@ export default function App() {
         {translated ? (
           <>
             <View>
-              <Ionicons name="add-circle-sharp" size={45} color={"#c92a47"} />
+              <Ionicons
+                name="add-circle-sharp"
+                size={45}
+                color={"#c92a47"}
+                onPress={() => toggleOverlay()}
+              />
             </View>
           </>
         ) : (
           <Text></Text>
         )}
-        <View style={{ position: "absolute", right: 50, bottom: 0 }}>
+        <View style={{ position: "absolute", right: 50, bottom: -10 }}>
           <Button title="翻訳" onPress={() => handleTranslate()} />
         </View>
-        
       </View>
     );
   }
