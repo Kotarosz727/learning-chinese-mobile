@@ -3,18 +3,22 @@ export default class ChineseInterator {
   url_fetch_list: string;
   url_postFavorite: string;
   url_fetchFavorite: string;
+  url_postNote: string;
 
   constructor() {
     this.url_fetch_list =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
-    this.url_postFavorite = "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";  
+    this.url_postFavorite =
+      "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
     this.url_fetchFavorite =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
+    this.url_postNote =
+      "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
   }
 
-  public fetchLists = async (query:string): Promise<[] | null> => {
+  public fetchLists = async (query: string): Promise<[] | null> => {
     console.log("fetchingList");
-    const url = this.url_fetch_list + '?info=' + query
+    const url = this.url_fetch_list + "?info=" + query;
     try {
       const res = await fetch(url, { method: "GET" });
       const sentences = await res.json();
@@ -25,53 +29,52 @@ export default class ChineseInterator {
     }
   };
 
-  public postFavorite = async (data:any, userid:string): Promise<void> => {
-      const mappeddata = {
-          userid: userid,
-          chinese: data.chinese,
-          japanese: data.japanese,
-          pinin: data.pinin,
-          type: "favorite",
-      };
-      console.log('posting favorite');
-      try {
-          const res = await fetch(this.url_postFavorite, {
-              method: "POST",
-              // mode: "no-cors",
-              headers: {
-                  "content-Type": "application/json",
-              },
-              body: JSON.stringify(mappeddata),
-          });
-      } catch (e) {
-          console.log("got error", e);
-      }
+  public postFavorite = async (data: any, userid: string): Promise<void> => {
+    const mappeddata = {
+      userid: userid,
+      chinese: data.chinese,
+      japanese: data.japanese,
+      pinin: data.pinin,
+      type: "favorite",
+    };
+    console.log("posting favorite");
+    try {
+      const res = await fetch(this.url_postFavorite, {
+        method: "POST",
+        // mode: "no-cors",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify(mappeddata),
+      });
+    } catch (e) {
+      console.log("got error", e);
+    }
   };
 
-  // public postNote = async (data, userid, url) => {
-  //     const mappeddata = {
-  //         userid: userid,
-  //         chinese: data.mychinese,
-  //         japanese: data.myjapanese,
-  //         pinin: data.mypinin,
-  //         type: "note",
-  //     };
-  //     try {
-  //         const res = await fetch(url, {
-  //             method: "POST",
-  //             // mode: "no-cors",
-  //             headers: {
-  //                 "content-Type": "application/json",
-  //             },
-  //             body: JSON.stringify(mappeddata),
-  //         });
-  //         console.log(res);
-
-  //         return await res.json();
-  //     } catch (e) {
-  //         console.log("got error", e);
-  //     }
-  // };
+  public postNote = async (data: any, userid: string) => {
+    const mappeddata = {
+      userid: userid,
+      chinese: data.mychinese,
+      japanese: data.myjapanese,
+      pinin: data.mypinyin,
+      type: "note",
+    };
+    try {
+      const res = await fetch(this.url_postNote, {
+        method: "POST",
+        // mode: "no-cors",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify(mappeddata),
+      });
+      console.log(res);
+      return await res.json();
+    } catch (e) {
+      console.log("got error", e);
+    }
+  };
 
   public fetchFavorites = async (userid: string) => {
     if (userid) {

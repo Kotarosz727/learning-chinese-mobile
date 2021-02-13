@@ -226,6 +226,15 @@ export default function App() {
       }
     };
 
+    const postNote = async () => {
+      const data = {
+        mychinese: chinese,
+        myjapanese: japanese,
+        mypinyin: pinyin,
+      };
+      await new ChineseInterator().postNote(data, userid);
+    };
+
     return (
       <View
         style={{
@@ -238,13 +247,17 @@ export default function App() {
         <Overlay
           isVisible={visible}
           onBackdropPress={() => toggleOverlay()}
-          overlayStyle={{ display:"flex", width:300 }}
+          overlayStyle={{ display: "flex", width: 300 }}
         >
           <View>
             <Input value={japanese} />
             <Input value={chinese} />
             <Input value={pinyin} />
-            <Button title="単語帳へ追加" style={{ marginTop: 5 }} />
+            <Button
+              title="単語帳へ追加"
+              style={{ marginTop: 5 }}
+              onPress={() => postNote()}
+            />
           </View>
         </Overlay>
         <TextInput
