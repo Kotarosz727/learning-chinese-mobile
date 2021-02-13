@@ -232,7 +232,10 @@ export default function App() {
         myjapanese: japanese,
         mypinyin: pinyin,
       };
-      await new ChineseInterator().postNote(data, userid);
+      const res = await new ChineseInterator().postNote(data, userid);
+      if(!res){
+        return <Text>単語帳の追加に失敗しました。</Text>
+      }
     };
 
     return (

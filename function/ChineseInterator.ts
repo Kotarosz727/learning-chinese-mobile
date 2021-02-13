@@ -69,7 +69,10 @@ export default class ChineseInterator {
         },
         body: JSON.stringify(mappeddata),
       });
-      console.log(res);
+      console.log(res.ok);
+      if(!res.ok){
+        return null;
+      }
       return await res.json();
     } catch (e) {
       console.log("got error", e);
