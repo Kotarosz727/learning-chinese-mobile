@@ -11,8 +11,12 @@ export default function content({ item, userid }) {
 
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
   async function setFavoriteItem(value) {
-    new ChineseInterator().postFavorite(value, userid);
-    setBookmarkStatus(true);
+    const res = new ChineseInterator().postFavorite(value, userid);
+    if (!res) {
+      return <Text>ブックマークに失敗しました。</Text>;
+    } else {
+      setBookmarkStatus(true);
+    }
   }
 
   async function removeFavoriteItem(value) {

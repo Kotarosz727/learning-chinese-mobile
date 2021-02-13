@@ -29,7 +29,7 @@ export default class ChineseInterator {
     }
   };
 
-  public postFavorite = async (data: any, userid: string): Promise<void> => {
+  public postFavorite = async (data: any, userid: string) => {
     const mappeddata = {
       userid: userid,
       chinese: data.chinese,
@@ -47,6 +47,10 @@ export default class ChineseInterator {
         },
         body: JSON.stringify(mappeddata),
       });
+      if(!res.ok){
+        return null;
+      }
+      return res;
     } catch (e) {
       console.log("got error", e);
     }
