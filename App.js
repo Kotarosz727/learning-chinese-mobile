@@ -233,8 +233,10 @@ export default function App() {
         mypinyin: pinyin,
       };
       const res = await new ChineseInterator().postNote(data, userid);
-      if(!res){
-        return <Text>単語帳の追加に失敗しました。</Text>
+      if (!res) {
+        return <Text>単語帳の追加に失敗しました。</Text>;
+      } else {
+        alert("単語帳に追加しました。");
       }
     };
 
