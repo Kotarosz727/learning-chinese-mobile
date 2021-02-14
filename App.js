@@ -10,9 +10,10 @@ import Data from "./components/data";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
+import { getData } from "./screen/function/screen_function";
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
-import SignInComponent from "./screen/SigninScreen"
+import SignInComponent from "./screen/SigninScreen";
 Amplify.configure(awsconfig);
 
 // async function urlOpener(url, redirectUrl) {
@@ -41,38 +42,6 @@ export default function App() {
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
   const [render, setRender] = useState(true);
-
-  const getData = async (query) => {
-    const res = (await new ChineseInterator().fetchLists(query)) ?? [];
-    if (!res) {
-      return <Text>No data</Text>;
-    }
-    if (userid) {
-      checkIsFavorite(res);
-    } else {
-      setData(res);
-    }
-  };
-
-  const checkIsFavorite = async (value) => {
-    //make bookmark true if it is bookmarked
-    const favoriteItems = await new ChineseInterator().fetchFavorites(userid);
-
-    if (favoriteItems) {
-      const bookmarked = [];
-      favoriteItems.map((r) => {
-        bookmarked.push(r.chinese);
-      });
-      value.map((v) => {
-        if (bookmarked.findIndex((item) => item === v.chinese) >= 0) {
-          v.bookmark = true;
-        }
-      });
-    }
-    console.log("check if favorite");
-    // setRender(!render);
-    setData(value);
-  };
 
   const getfavorites = async () => {
     // const res = await new ChineseInterator().getAllAsyncStorage();
@@ -106,14 +75,19 @@ export default function App() {
     return <HomeComponent navigation={navigation} username={username} />;
   }
 
-  function Level1Screen({ navigation }) {
+  function ContentScreen({ route, navigation }) {
+    const query = route.params.query;
     useEffect(() => {
       let mounted = true;
-      navigation.addListener("focus", () => {
+      navigation.addListener("focus", async () => {
         if (mounted) {
-          console.log("focus homescreen");
-          const query = "level1";
-          getData(query);
+          console.log("tetetset", query);
+          const res = await getData(query, userid);
+          if (res) {
+            setData(res);
+          } else {
+            return <Text>データが取得できませんでした。</Text>;
+          }
         }
       });
       return () => {
@@ -127,11 +101,15 @@ export default function App() {
   function Level2Screen({ navigation }) {
     useEffect(() => {
       let mounted = true;
-      navigation.addListener("focus", () => {
+      navigation.addListener("focus", async () => {
         if (mounted) {
-          console.log("focus homescreen");
           const query = "level2";
-          getData(query);
+          const res = await getData(query, userid);
+          if (res) {
+            setData(res);
+          } else {
+            return <Text>データが取得できませんでした。</Text>;
+          }
         }
       });
       return () => {
@@ -157,7 +135,18 @@ export default function App() {
   }
 
   function SignInScreen() {
-    return <SignInComponent />
+    return <SignInComponent />;
+  }
+
+  function getTitle(route) {
+    const queryName = route.params.query;
+
+    switch (queryName) {
+      case "level1":
+        return "Level1";
+      case "level2":
+        return "Level2";
+    }
   }
 
   function HomeStackScreen({ navigation }) {
@@ -193,24 +182,10 @@ export default function App() {
           })}
         />
         <HomeStack.Screen
-          name="Level1"
-          component={Level1Screen}
+          name="content"
+          component={ContentScreen}
           options={({ route }) => ({
-            title: "中国語 Level①",
-            headerStyle: {
-              backgroundColor: "#03dffc",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-          })}
-        />
-        <HomeStack.Screen
-          name="Level2"
-          component={Level2Screen}
-          options={({ route }) => ({
-            title: "中国語 Level②",
+            title: getTitle(route),
             headerStyle: {
               backgroundColor: "#03dffc",
             },

@@ -16,14 +16,14 @@ export default function HomeScreen({ navigation, username }) {
       </View>
       <Button
         title="中国語 Level①"
-        onPress={() => navigation.navigate("Level1")}
+        onPress={() => navigation.navigate("content", {query: 'level1'})}
         type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
       />
       <Button
         title="中国語 Level②"
-        onPress={() => navigation.navigate("Level2")}
+        onPress={() => navigation.navigate("content", {query: 'level2'})}
         type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
