@@ -1,4 +1,4 @@
-export default async function translateFunction(text, toJapanese) {
+export async function translateFunction(text, toJapanese) {
   let url =
     "https://script.google.com/macros/s/AKfycbyXxnI_Fq939tnxFL9SDX0iz5Wh30WSq7oCRQRsaKcgxOmHHUd7Zq_Rjw/exec" +
     "?" +
