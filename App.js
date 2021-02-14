@@ -4,17 +4,15 @@ import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
-import Icon from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import { Button, Overlay, Input } from "react-native-elements";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
-
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
+import SignInComponent from "./screen/SigninScreen"
 Amplify.configure(awsconfig);
 
 // async function urlOpener(url, redirectUrl) {
@@ -158,40 +156,8 @@ export default function App() {
     return <TranslateComponent userid={userid} />;
   }
 
-  function SignInScreen({ navigation }) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        {/* <Button
-          title="FaceBookでログイン"
-          icon={<Icon name="facebook-official" size={20} containerStyle={{paddingRight:10}} reverse={true} color="white" />}
-          onPress={() => Auth.federatedSignIn({ provider: "Facebook" })}
-          style={{ width: 200, marginBottom: 1 }}
-        /> */}
-        <Icon.Button
-          name="facebook"
-          size={30}
-          backgroundColor="#3b5998"
-          style={{ width: 200 }}
-        >
-          <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-            FaceBookでログイン
-          </Text>
-        </Icon.Button>
-        <View style={{ marginTop: 30, marginBottom: 30 }}>
-          <Icon.Button
-            name="google"
-            size={30}
-            type="outline"
-            style={{ width: 200 }}
-          >
-            <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-              Googleでログイン
-            </Text>
-          </Icon.Button>
-        </View>
-        <Text>Create account</Text>
-      </View>
-    );
+  function SignInScreen() {
+    return <SignInComponent />
   }
 
   function HomeStackScreen({ navigation }) {
@@ -200,7 +166,7 @@ export default function App() {
         <HomeStack.Screen
           name="Home"
           component={HomeScreen}
-          options={({ route }) => ({
+          options={() => ({
             title: "ホーム",
             headerStyle: {
               backgroundColor: "#03dffc",
