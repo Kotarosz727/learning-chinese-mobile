@@ -7,10 +7,13 @@ import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
-import { getData, getfavorites } from "./screen/function/screen_function";
+import {
+  getData,
+  getfavorites,
+  getNotes,
+} from "./screen/function/screen_function";
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
@@ -41,7 +44,7 @@ export default function App() {
   const [userid, setUserid] = useState(null);
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
-  const [render, setRender] = useState(true);
+  const [note, setNote] = useState([]);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -55,10 +58,10 @@ export default function App() {
 
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
-  const Level1Stack = createStackNavigator();
   const TranslateStack = createStackNavigator();
   const SignInStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
+  const NoteStack = createStackNavigator();
 
   const errorMsg = <Text>データが取得できませんでした。</Text>;
 
@@ -91,10 +94,10 @@ export default function App() {
   function FavoriteScreen({ navigation }) {
     useEffect(() => {
       let mounted = true;
-      navigation.addListener("focus", async() => {
+      navigation.addListener("focus", async () => {
         const res = await getfavorites(userid);
-        if(res){
-          setFavorite(res)
+        if (res) {
+          setFavorite(res);
         } else {
           return errorMsg;
         }
@@ -108,6 +111,24 @@ export default function App() {
 
   function TranslateScreen() {
     return <TranslateComponent userid={userid} />;
+  }
+
+  function NoteScreen({ navigation }) {
+    useEffect(() => {
+      let mounted = true;
+      navigation.addListener("focus", async () => {
+        const res = await getNotes(userid);
+        if (res) {
+          setNote(res);
+        } else {
+          return errorMsg;
+        }
+      });
+      return () => {
+        mounted = false;
+      };
+    });
+    return <Data data={note} userid={userid} />;
   }
 
   function SignInScreen() {
@@ -284,6 +305,47 @@ export default function App() {
     );
   }
 
+  function NoteStackScreen({ navigation }) {
+    return (
+      <NoteStack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#03dffc",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <Icon5
+              name="bars"
+              size={23}
+              color={"white"}
+              style={{ marginLeft: 13 }}
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        }}
+      >
+        <NoteStack.Screen
+          name="Note"
+          component={NoteScreen}
+          options={({ route }) => ({
+            title: "My単語帳",
+            headerStyle: {
+              backgroundColor: "#03dffc",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          })}
+        />
+      </NoteStack.Navigator>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Drawer.Navigator>
@@ -306,6 +368,13 @@ export default function App() {
           component={TranslateStackScreen}
           options={{
             drawerIcon: ({}) => <MaterialIcons name="translate" size={20} />,
+          }}
+        />
+        <Drawer.Screen
+          name="my単語帳"
+          component={NoteStackScreen}
+          options={{
+            drawerIcon: ({}) => <Ionicons name="folder-outline" size={20} />,
           }}
         />
         <Drawer.Screen

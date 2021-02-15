@@ -49,9 +49,14 @@ export default function content({ item, userid }) {
         <Text style={styles.content} onPress={() => handleToggle(!front)}>
           {item.japanese}
         </Text>
-        <Text style={styles.bookmark}>
-          {bookmarkStatus === true ? bookmark : bookmarkEmpty}
-        </Text>
+        {/* My単語帳画面ではブックマークは表示しない */}
+        {bookmarkStatus != "note" ? (
+          <Text style={styles.bookmark}>
+            {bookmarkStatus === true ? bookmark : bookmarkEmpty}
+          </Text>
+        ) : (
+          <Text></Text>
+        )}
       </View>
     );
   };
@@ -70,9 +75,14 @@ export default function content({ item, userid }) {
         >
           {item.pinin}
         </Text>
-        <Text style={styles.bookmark}>
-          {bookmarkStatus === true ? bookmark : bookmarkEmpty}
-        </Text>
+        {/* My単語帳画面ではブックマークは表示しない */}
+        {bookmarkStatus != "note" ? (
+          <Text style={styles.bookmark}>
+            {bookmarkStatus === true ? bookmark : bookmarkEmpty}
+          </Text>
+        ) : (
+          <Text></Text>
+        )}
         <Text style={styles.arrowRight}>{arrowRight}</Text>
       </View>
     );

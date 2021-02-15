@@ -51,11 +51,20 @@ export const checkIsFavorite = async (value, userid) => {
 };
 
 export const getfavorites = async (userid) => {
-  // const res = await new ChineseInterator().getAllAsyncStorage();
   const res = await new ChineseInterator().fetchFavorites(userid);
   if (res) {
     res.map((v) => {
       v.bookmark = true;
+    });
+    return res;
+  }
+};
+
+export const getNotes = async (userid) => {
+  const res = await new ChineseInterator().fetchNotes(userid);
+  if (res) {
+    res.map((v) => {
+      v.bookmark = "note";
     });
     return res;
   }
