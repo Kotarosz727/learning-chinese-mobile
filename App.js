@@ -142,8 +142,8 @@ export default function App() {
     const queryName = route.params.query;
 
     switch (queryName) {
-      case "level1":
-        return "Level1";
+      case "nichijo":
+        return "日常会話";
       case "level2":
         return "Level2";
     }

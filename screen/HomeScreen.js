@@ -15,8 +15,8 @@ export default function HomeScreen({ navigation, username }) {
         )}
       </View>
       <Button
-        title="中国語 Level①"
-        onPress={() => navigation.navigate("content", {query: 'level1'})}
+        title="日常会話"
+        onPress={() => navigation.navigate("content", {query: 'nichijo'})}
         type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
