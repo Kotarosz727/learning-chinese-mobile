@@ -144,8 +144,8 @@ export default function App() {
     switch (queryName) {
       case "nichijo":
         return "日常会話";
-      case "level2":
-        return "Level2";
+      case "dousa":
+        return "動詞";
     }
   }
 
