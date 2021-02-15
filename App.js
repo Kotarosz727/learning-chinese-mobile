@@ -10,7 +10,7 @@ import Data from "./components/data";
 import ChineseInterator from "./function/ChineseInterator";
 import Amplify, { Auth } from "aws-amplify";
 import awsconfig from "./aws-exports";
-import { getData } from "./screen/function/screen_function";
+import { getData, getfavorites } from "./screen/function/screen_function";
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
@@ -43,17 +43,6 @@ export default function App() {
   const [favorite, setFavorite] = useState([]);
   const [render, setRender] = useState(true);
 
-  const getfavorites = async () => {
-    // const res = await new ChineseInterator().getAllAsyncStorage();
-    const res = await new ChineseInterator().fetchFavorites(userid);
-    if (res) {
-      res.map((v) => {
-        v.bookmark = true;
-      });
-      setFavorite(res);
-    }
-  };
-
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => {
@@ -71,6 +60,8 @@ export default function App() {
   const SignInStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
 
+  const errorMsg = <Text>データが取得できませんでした。</Text>;
+
   function HomeScreen({ navigation }) {
     return <HomeComponent navigation={navigation} username={username} />;
   }
@@ -81,34 +72,11 @@ export default function App() {
       let mounted = true;
       navigation.addListener("focus", async () => {
         if (mounted) {
-          console.log("tetetset", query);
           const res = await getData(query, userid);
           if (res) {
             setData(res);
           } else {
-            return <Text>データが取得できませんでした。</Text>;
-          }
-        }
-      });
-      return () => {
-        mounted = false;
-      };
-    }, []);
-
-    return <Data data={data} userid={userid} />;
-  }
-
-  function Level2Screen({ navigation }) {
-    useEffect(() => {
-      let mounted = true;
-      navigation.addListener("focus", async () => {
-        if (mounted) {
-          const query = "level2";
-          const res = await getData(query, userid);
-          if (res) {
-            setData(res);
-          } else {
-            return <Text>データが取得できませんでした。</Text>;
+            return errorMsg;
           }
         }
       });
@@ -122,10 +90,18 @@ export default function App() {
 
   function FavoriteScreen({ navigation }) {
     useEffect(() => {
-      navigation.addListener("focus", () => {
-        console.log("focus favorite");
-        getfavorites();
+      let mounted = true;
+      navigation.addListener("focus", async() => {
+        const res = await getfavorites(userid);
+        if(res){
+          setFavorite(res)
+        } else {
+          return errorMsg;
+        }
       });
+      return () => {
+        mounted = false;
+      };
     });
     return <Data data={favorite} userid={userid} />;
   }
@@ -140,7 +116,6 @@ export default function App() {
 
   function getTitle(route) {
     const queryName = route.params.query;
-
     switch (queryName) {
       case "nichijo":
         return "日常会話";

@@ -1,4 +1,4 @@
-import ChineseInterator from '../../function/ChineseInterator'
+import ChineseInterator from "../../function/ChineseInterator";
 
 export async function translateFunction(text, toJapanese) {
   let url =
@@ -50,13 +50,13 @@ export const checkIsFavorite = async (value, userid) => {
   return value;
 };
 
-export const getfavorites = async () => {
+export const getfavorites = async (userid) => {
   // const res = await new ChineseInterator().getAllAsyncStorage();
   const res = await new ChineseInterator().fetchFavorites(userid);
   if (res) {
     res.map((v) => {
       v.bookmark = true;
     });
-    setFavorite(res);
+    return res;
   }
 };
