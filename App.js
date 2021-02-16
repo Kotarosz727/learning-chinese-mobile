@@ -138,6 +138,8 @@ export default function App() {
   function getTitle(route) {
     const queryName = route.params.query;
     switch (queryName) {
+      case "120":
+        return "基本120";
       case "nichijo":
         return "日常会話";
       case "dousa":
