@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { Button, Overlay, Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Amplify, { Auth } from "aws-amplify";
 
 export default function HomeScreen() {
   return (
@@ -10,21 +11,37 @@ export default function HomeScreen() {
         name="facebook"
         size={30}
         backgroundColor="#3b5998"
-        style={{ width: 200 }}
+        style={{ width: 300 }}
+        onClick={() => Auth.federatedSignIn({ provider: "Facebook" })}
       >
         <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-          FaceBookでログイン
+          FaceBookアカウントでログイン
         </Text>
       </Icon.Button>
-      <View style={{ marginTop: 30, marginBottom: 30 }}>
+      <View style={{ marginTop: 30 }}>
         <Icon.Button
           name="google"
           size={30}
           type="outline"
-          style={{ width: 200 }}
+          style={{ width: 300 }}
+          onClick={() => Auth.federatedSignIn({ provider: "Google" })}
         >
           <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-            Googleでログイン
+            Googleアカウントでログイン
+          </Text>
+        </Icon.Button>
+      </View>
+      <View style={{ marginTop: 30, marginBottom: 30 }}>
+        <Icon.Button
+          name="amazon"
+          size={30}
+          type="outline"
+          backgroundColor="#f5d362"
+          style={{ width: 300 }}
+          onClick={() => Auth.federatedSignIn({ provider: "Amazon" })}
+        >
+          <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
+            Amazonアカウントでログイン
           </Text>
         </Icon.Button>
       </View>
