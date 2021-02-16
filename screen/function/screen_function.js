@@ -1,4 +1,5 @@
 import ChineseInterator from "../../function/ChineseInterator";
+import Amplify, { Auth } from "aws-amplify";
 
 export async function translateFunction(text, toJapanese) {
   let url =
@@ -67,5 +68,13 @@ export const getNotes = async (userid) => {
       v.bookmark = "note";
     });
     return res;
+  }
+};
+
+export const logout = async () => {
+  try {
+    await Auth.signOut();
+  } catch (e) {
+    console.log("log out error", e);
   }
 };
