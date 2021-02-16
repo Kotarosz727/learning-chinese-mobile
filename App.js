@@ -156,7 +156,7 @@ export default function App() {
           options={() => ({
             title: "ホーム",
             headerStyle: {
-              backgroundColor: "#03dffc",
+              backgroundColor: "#0f0f0f",
             },
             headerTintColor: "#fff",
             headerTitleStyle: {
@@ -185,7 +185,7 @@ export default function App() {
           options={({ route }) => ({
             title: getTitle(route),
             headerStyle: {
-              backgroundColor: "#03dffc",
+              backgroundColor: "#0f0f0f",
             },
             headerTintColor: "#fff",
             headerTitleStyle: {
@@ -203,7 +203,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#03dffc",
+            backgroundColor: "#0f0f0f",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -231,7 +231,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#03dffc",
+            backgroundColor: "#0f0f0f",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -254,7 +254,7 @@ export default function App() {
           options={({ route }) => ({
             title: "ブックマーク",
             headerStyle: {
-              backgroundColor: "#03dffc",
+              backgroundColor: "#0f0f0f",
             },
             headerTintColor: "#fff",
             headerTitleStyle: {
@@ -272,7 +272,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#03dffc",
+            backgroundColor: "#0f0f0f",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -295,7 +295,7 @@ export default function App() {
           options={({ route }) => ({
             title: "翻訳",
             headerStyle: {
-              backgroundColor: "#03dffc",
+              backgroundColor: "#0f0f0f",
             },
             headerTintColor: "#fff",
             headerTitleStyle: {
@@ -313,7 +313,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#03dffc",
+            backgroundColor: "#0f0f0f",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
@@ -336,7 +336,7 @@ export default function App() {
           options={({ route }) => ({
             title: "My単語帳",
             headerStyle: {
-              backgroundColor: "#03dffc",
+              backgroundColor: "#0f0f0f",
             },
             headerTintColor: "#fff",
             headerTitleStyle: {
