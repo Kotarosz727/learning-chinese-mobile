@@ -5,32 +5,23 @@ import { Button } from "react-native-elements";
 export default function HomeScreen({ navigation, username }) {
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
-      <View style={{ marginTop: 150 }}>
-        {username ? (
-          <Text style={{ marginBottom: 50, fontSize: 25 }}>
-            您好!{username}
-          </Text>
-        ) : (
-          <Text></Text>
-        )}
-      </View>
       <Button
         title="基本120文"
-        onPress={() => navigation.navigate("content", {query: '120'})}
+        onPress={() => navigation.navigate("content", { query: "120" })}
         type="outline"
         raised={true}
-        containerStyle={{ marginBottom: 40, width: 300 }}
+        containerStyle={{ marginTop: 100, marginBottom: 40, width: 300 }}
       />
       <Button
         title="日常会話"
-        onPress={() => navigation.navigate("content", {query: 'nichijo'})}
+        onPress={() => navigation.navigate("content", { query: "nichijo" })}
         type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
       />
       <Button
         title="動詞"
-        onPress={() => navigation.navigate("content", {query: 'dousa'})}
+        onPress={() => navigation.navigate("content", { query: "dousa" })}
         type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
