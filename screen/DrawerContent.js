@@ -18,7 +18,7 @@ export function DrawerContent({ props, username }) {
       <DrawerContentScrollView {...props}>
         {username ? (
           <Drawer.Section>
-            <View style={{ flex: 1, marginTop: 10, alignItems: "center" }}>
+            <View style={{ flex: 1, marginTop: 10, marginLeft: 15 }}>
               <Title>
                 <Text style={{ fontSize: 20 }}>{username}</Text>
                 <Text></Text>
