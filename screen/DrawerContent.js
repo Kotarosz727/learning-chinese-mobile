@@ -11,6 +11,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Drawer, Text, Title } from "react-native-paper";
 import { logout } from "./function/screen_function";
+import Amplify, { Auth, Hub } from "aws-amplify";
 
 export function DrawerContent({ props, username }) {
   return (
@@ -55,7 +56,7 @@ export function DrawerContent({ props, username }) {
                 <MaterialCommunityIcons name="exit-to-app" size={25} />
               )}
               label="SignOut"
-              onPress={() => logout()}
+              onPress={() => Auth.signOut()}
             />
           </>
         ) : (
