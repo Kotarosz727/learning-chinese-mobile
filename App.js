@@ -17,6 +17,7 @@ import {
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
+import { DrawerContent } from "./screen/DrawerContent";
 Amplify.configure(awsconfig);
 
 // async function urlOpener(url, redirectUrl) {
@@ -350,42 +351,64 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator>
-        <Drawer.Screen
-          name="ホーム"
-          component={HomeStackScreen}
-          options={{
-            drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
-          }}
-        />
-        <Drawer.Screen
-          name="ブックマーク"
-          component={FavoriteStackScreen}
-          options={{
-            drawerIcon: ({}) => <Ionicons name="bookmarks-outline" size={20} />,
-          }}
-        />
-        <Drawer.Screen
-          name="翻訳"
-          component={TranslateStackScreen}
-          options={{
-            drawerIcon: ({}) => <MaterialIcons name="translate" size={20} />,
-          }}
-        />
-        <Drawer.Screen
-          name="my単語帳"
-          component={NoteStackScreen}
-          options={{
-            drawerIcon: ({}) => <Ionicons name="folder-outline" size={20} />,
-          }}
-        />
-        <Drawer.Screen
-          name="SignIn"
-          component={SignInStackScreen}
-          options={{
-            drawerIcon: ({}) => <Ionicons name="log-in-outline" size={20} />,
-          }}
-        />
+      <Drawer.Navigator drawerContent={(props) => <DrawerContent props={props} username={username}/>}>
+        {username ? (
+          <>
+            <Drawer.Screen
+              name="ホーム"
+              component={HomeStackScreen}
+              options={{
+                drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
+              }}
+            />
+            <Drawer.Screen
+              name="ブックマーク"
+              component={FavoriteStackScreen}
+              options={{
+                drawerIcon: ({}) => (
+                  <Ionicons name="bookmarks-outline" size={20} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="翻訳"
+              component={TranslateStackScreen}
+              options={{
+                drawerIcon: ({}) => (
+                  <MaterialIcons name="translate" size={20} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="my単語帳"
+              component={NoteStackScreen}
+              options={{
+                drawerIcon: ({}) => (
+                  <Ionicons name="folder-outline" size={20} />
+                ),
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <Drawer.Screen
+              name="ホーム"
+              component={HomeStackScreen}
+              options={{
+                drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
+              }}
+            />
+            <Drawer.Screen
+              name="SignIn"
+              component={SignInStackScreen}
+              options={{
+                drawerIcon: ({}) => (
+                  <Ionicons name="log-in-outline" size={20} />
+                ),
+              }}
+            />
+          </>
+        )}
       </Drawer.Navigator>
     </NavigationContainer>
   );
