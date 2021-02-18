@@ -24,13 +24,11 @@ export const getData = async (query, userid) => {
   if (!res) {
     return null;
   }
-  let ret_item = [];
   if (userid) {
-    ret_item = checkIsFavorite(res, userid);
+    checkIsFavorite(res, userid);
   } else {
-    ret_item = setData(res);
+    return res;
   }
-  return ret_item;
 };
 
 export const checkIsFavorite = async (value, userid) => {
