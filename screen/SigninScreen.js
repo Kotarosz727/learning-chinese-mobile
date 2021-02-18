@@ -12,7 +12,7 @@ export default function HomeScreen() {
         size={30}
         backgroundColor="#3b5998"
         style={{ width: 300 }}
-        onClick={() => Auth.federatedSignIn({ provider: "Facebook" })}
+        onPress={() => Auth.federatedSignIn({ provider: "Facebook" })}
       >
         <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
           FaceBookアカウントでログイン
@@ -24,7 +24,7 @@ export default function HomeScreen() {
           size={30}
           type="outline"
           style={{ width: 300 }}
-          onClick={() => Auth.federatedSignIn({ provider: "Google" })}
+          onPress={() => Auth.federatedSignIn({ provider: "Google" })}
         >
           <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
             Googleアカウントでログイン
@@ -38,7 +38,7 @@ export default function HomeScreen() {
           type="outline"
           backgroundColor="#f5d362"
           style={{ width: 300 }}
-          onClick={() => Auth.federatedSignIn({ provider: "Amazon" })}
+          onPress={() => Auth.federatedSignIn({ provider: "Amazon" })}
         >
           <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
             Amazonアカウントでログイン
