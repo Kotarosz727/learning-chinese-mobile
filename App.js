@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, TextInput } from "react-native";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Linking,
+  Platform,
+} from "react-native";
+import {
+  NavigationContainer,
+  useFocusEffect,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import Amplify, { Auth } from "aws-amplify";
+import Amplify, { Auth, Hub } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import {
   getData,
@@ -18,29 +30,32 @@ import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
 import { DrawerContent } from "./screen/DrawerContent";
-Amplify.configure(awsconfig);
+import * as WebBrowser from "expo-web-browser";
 
-// async function urlOpener(url, redirectUrl) {
-//   const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
-//     url,
-//     redirectUrl
-//   );
+// Amplify.configure(awsconfig);
 
-//   if (type === "success" && Platform.OS === "ios") {
-//     WebBrowser.dismissBrowser();
-//     return Linking.openURL(newUrl);
-//   }
-// }
+async function urlOpener(url, redirectUrl) {
+  const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
+    url,
+    redirectUrl
+  );
 
-// Amplify.configure({
-//   ...awsconfig,
-//   oauth: {
-//     ...awsconfig.oauth,
-//     urlOpener,
-//   },
-// });
+  if (type === "success" && Platform.OS === "ios") {
+    WebBrowser.dismissBrowser();
+    return Linking.openURL(newUrl);
+  }
+}
+
+Amplify.configure({
+  ...awsconfig,
+  oauth: {
+    ...awsconfig.oauth,
+    urlOpener,
+  },
+});
 
 export default function App() {
+  const [user, setUser] = useState("");
   const [username, setUsername] = useState("");
   const [userid, setUserid] = useState(null);
   const [data, setData] = useState([]);
@@ -48,14 +63,29 @@ export default function App() {
   const [note, setNote] = useState([]);
 
   useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then((user) => {
-        setUsername(user.attributes.name);
-        setUserid(user.attributes.sub);
-      })
-      .catch((err) => console.log("error", err));
-    console.log("mounted");
-  }, []);
+    Hub.listen("auth", ({ payload: { event, data } }) => {
+      switch (event) {
+        case "signIn":
+          setUser(data);
+          Auth.currentAuthenticatedUser()
+            .then((user) => {
+              setUsername(user.attributes.name);
+              setUserid(user.attributes.sub);
+            })
+            .catch((err) => {
+              // setUsername("");
+              // setUserid("");
+              console.log("error", err);
+            });
+          break;
+        case "signOut":
+          setUser("");
+          setUsername("");
+          setUserid("");
+          break;
+      }
+    });
+  });
 
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
@@ -350,8 +380,12 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Drawer.Navigator drawerContent={(props) => <DrawerContent props={props} username={username}/>}>
+    <NavigationContainer theme={DarkTheme}>
+      <Drawer.Navigator
+        drawerContent={(props) => (
+          <DrawerContent props={props} username={username} />
+        )}
+      >
         {username ? (
           <>
             <Drawer.Screen

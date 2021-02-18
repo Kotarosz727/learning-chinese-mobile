@@ -18,7 +18,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "bundleIdentifier": "com.kotarosz727.learning-chinese-mobile"
     },
     "android": {
       "adaptiveIcon": {
