@@ -19,18 +19,23 @@ export default function content({ item, userid }) {
     }
   }
 
-  async function removeFavoriteItem(value) {
-    new ChineseInterator().removeDataFromAsyncStorage(value);
+  async function removeFavoriteItem() {
+    const data = {
+      userid: userid,
+      chinese: item.chinese,
+    };
+    new ChineseInterator().deleteFavorite(data);
     setBookmarkStatus(false);
   }
 
   const [front, toggleCard] = useState(true);
+
   const bookmark = (
     <Icon
       name="bookmark"
       size={25}
       color="#2b59c4"
-      onPress={() => removeFavoriteItem(item.japanese)}
+      onPress={() => removeFavoriteItem()}
     />
   );
   const bookmarkEmpty = (

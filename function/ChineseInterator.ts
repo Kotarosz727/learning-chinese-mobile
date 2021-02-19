@@ -5,6 +5,8 @@ export default class ChineseInterator {
   url_fetchFavorite: string;
   url_postNote: string;
   url_fetchNote: string;
+  url_deleteFavorite: string;
+  url_deleteNote: string;
 
   constructor() {
     this.url_fetch_list =
@@ -16,6 +18,10 @@ export default class ChineseInterator {
     this.url_postNote =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
     this.url_fetchNote =
+      "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
+    this.url_deleteFavorite =
+      "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
+    this.url_deleteNote =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
   }
 
@@ -115,66 +121,66 @@ export default class ChineseInterator {
     }
   };
 
-  public getAllAsyncStorage = async () => {
-    try {
-      const allKeys = await this.getAllKeys();
-      const ret_arr: any = [];
-      await allKeys?.map(async (v) => {
-        const favorite: [] = await this.getAsyncStorageItem(v);
-        ret_arr.push(favorite);
-      });
-      return ret_arr;
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // public getAllAsyncStorage = async () => {
+  //   try {
+  //     const allKeys = await this.getAllKeys();
+  //     const ret_arr: any = [];
+  //     await allKeys?.map(async (v) => {
+  //       const favorite: [] = await this.getAsyncStorageItem(v);
+  //       ret_arr.push(favorite);
+  //     });
+  //     return ret_arr;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  public storeDataToAsyncStorage = async (value: any) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem(value.japanese, jsonValue);
-      console.log("OK");
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // public storeDataToAsyncStorage = async (value: any) => {
+  //   try {
+  //     const jsonValue = JSON.stringify(value);
+  //     await AsyncStorage.setItem(value.japanese, jsonValue);
+  //     console.log("OK");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  public removeDataFromAsyncStorage = async (value: string) => {
-    try {
-      await AsyncStorage.removeItem(value);
-    } catch (e) {
-      // remove error
-    }
-    console.log("Done.");
-  };
+  // public removeDataFromAsyncStorage = async (value: string) => {
+  //   try {
+  //     await AsyncStorage.removeItem(value);
+  //   } catch (e) {
+  //     // remove error
+  //   }
+  //   console.log("Done.");
+  // };
 
-  public getAsyncStorageItem = async (value: string) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(value);
-      return jsonValue != null ? JSON.parse(jsonValue) : [];
-    } catch (e) {
-      console.log("getAsyncStorageItem error:", e);
-    }
-  };
+  // public getAsyncStorageItem = async (value: string) => {
+  //   try {
+  //     const jsonValue = await AsyncStorage.getItem(value);
+  //     return jsonValue != null ? JSON.parse(jsonValue) : [];
+  //   } catch (e) {
+  //     console.log("getAsyncStorageItem error:", e);
+  //   }
+  // };
 
-  public getAllKeys = async () => {
-    try {
-      const mykeys: string[] = await AsyncStorage.getAllKeys();
-      return mykeys;
-    } catch (e) {
-      // read key error
-    }
-  };
+  // public getAllKeys = async () => {
+  //   try {
+  //     const mykeys: string[] = await AsyncStorage.getAllKeys();
+  //     return mykeys;
+  //   } catch (e) {
+  //     // read key error
+  //   }
+  // };
 
-  public clearAll = async () => {
-    try {
-      await AsyncStorage.clear();
-    } catch (e) {
-      // clear error
-    }
+  // public clearAll = async () => {
+  //   try {
+  //     await AsyncStorage.clear();
+  //   } catch (e) {
+  //     // clear error
+  //   }
 
-    console.log("Done.");
-  };
+  //   console.log("Done.");
+  // };
 
   public fetchNotes = async (userid: string) => {
     if (userid) {
@@ -205,25 +211,25 @@ export default class ChineseInterator {
     }
   };
 
-  // public deleteFavorite = async (url: string, data: { userid: string; chinese: string }) => {
-  //     const res = await fetch(url, {
-  //         method: "DELETE",
-  //         headers: {
-  //             "content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(data),
-  //     });
-  //     console.log("deleted");
-  // };
+  public deleteFavorite = async (data: { userid: string; chinese: string }) => {
+    const res = await fetch(this.url_deleteFavorite, {
+      method: "DELETE",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    console.log("deleted");
+  };
 
-  // public deleteNote = async (url: string, data: { userid: string; chinese: string }) => {
-  //     const res = await fetch(url, {
-  //         method: "DELETE",
-  //         headers: {
-  //             "content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(data),
-  //     });
-  //     console.log("deleted");
-  // };
+  public deleteNote = async (data: { userid: string; chinese: string }) => {
+    const res = await fetch(this.url_deleteNote, {
+      method: "DELETE",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    console.log("deleted");
+  };
 }
