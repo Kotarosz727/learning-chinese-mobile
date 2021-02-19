@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
 import FlipCard from "react-native-flip-card";
@@ -35,14 +36,22 @@ export default function content({ item, userid }) {
   const bookmarkEmpty = (
     <Icon name="bookmark-o" size={25} onPress={() => setFavoriteItem(item)} />
   );
-  const arrowRight = (
-    <Icon5
-      name="arrow-right"
-      style={styles.arrowRight}
-      onPress={() => handleToggle(!front)}
-      size={25}
-    />
-  );
+  // const arrowRight = (
+  //   <Icon5
+  //     name="arrow-right"
+  //     style={styles.arrowRight}
+  //     onPress={() => handleToggle(!front)}
+  //     size={25}
+  //   />
+  // );
+  // const Volume = (
+  //   <Ionicons
+  //     name="volume-high"
+  //     onPress={() => Speech.speak(item.chinese, { language: "zh" })}
+  //     size={30}
+  //     style={{ marginRight: 50 }}
+  //   />
+  // );
   const frontCard = (item) => {
     return (
       <View style={styles.item}>
@@ -63,12 +72,9 @@ export default function content({ item, userid }) {
   const backCard = (item) => {
     return (
       <View style={styles.item}>
-        <Text
-          style={styles.content}
-          onPress={() => Speech.speak(item.chinese, { language: "zh" })}
-        >
-          {item.chinese}
-        </Text>
+        <View style={styles.content} onPress={() => handleToggle(!front)}>
+          <Text style={styles.content}>{item.chinese}</Text>
+        </View>
         <Text
           style={styles.pinin}
           onPress={() => Speech.speak(item.chinese, { language: "zh" })}
@@ -83,7 +89,6 @@ export default function content({ item, userid }) {
         ) : (
           <Text></Text>
         )}
-        <Text style={styles.arrowRight}>{arrowRight}</Text>
       </View>
     );
   };
@@ -91,9 +96,13 @@ export default function content({ item, userid }) {
     toggleCard(value);
   };
 
-  // return <>{front ? frontCard(item) : backCard(item)}</>;
   return (
-    <FlipCard flip={!front} flipHorizontal={true} flipVertical={false} friction={10}>
+    <FlipCard
+      flip={!front}
+      flipHorizontal={true}
+      flipVertical={false}
+      friction={10}
+    >
       {/* Face Side */}
       {frontCard(item)}
       {/* Back Side */}
@@ -111,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
-    height: 180,
+    height: 230,
     display: "flex",
     justifyContent: "center",
     marginBottom: 20,
@@ -119,12 +128,12 @@ const styles = StyleSheet.create({
   content: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 32,
+    fontSize: 40,
   },
   pinin: {
-    marginTop: 30,
+    marginTop: 32,
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 29,
   },
   bookmark: {
     position: "absolute",
