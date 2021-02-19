@@ -4,7 +4,7 @@ export default class ChineseInterator {
   url_postFavorite: string;
   url_fetchFavorite: string;
   url_postNote: string;
-  url_fetchNote:string;
+  url_fetchNote: string;
 
   constructor() {
     this.url_fetch_list =
@@ -15,7 +15,8 @@ export default class ChineseInterator {
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
     this.url_postNote =
       "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/sentences";
-    this.url_fetchNote = "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites"  
+    this.url_fetchNote =
+      "https://mlsei45cm3.execute-api.ap-northeast-1.amazonaws.com/dev/favorites";
   }
 
   public fetchLists = async (query: string): Promise<[] | null> => {
@@ -49,7 +50,7 @@ export default class ChineseInterator {
         },
         body: JSON.stringify(mappeddata),
       });
-      if(!res.ok){
+      if (!res.ok) {
         return null;
       }
       return res;
@@ -76,7 +77,7 @@ export default class ChineseInterator {
         body: JSON.stringify(mappeddata),
       });
       console.log(res.ok);
-      if(!res.ok){
+      if (!res.ok) {
         return null;
       }
       return await res.json();
@@ -175,30 +176,33 @@ export default class ChineseInterator {
     console.log("Done.");
   };
 
-  public fetchNotes = async (userid:string) => {
-      if (userid) {
-          const data = {
-              userid: userid,
-          };
-          console.log('fetchingNotes')
-          const res = await fetch(this.url_fetchNote, {
-              method: "POST",
-              // mode: "no-cors",
-              headers: {
-                  "content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-          });
-          const json = await res.json();
-          const sentences = json.Items;
-          const ret_arr = sentences.reduce((accumulater:any, currentValue:any) => {
-              if (currentValue.type === "note") {
-                  accumulater.push(currentValue);
-              }
-              return accumulater;
-          }, []);
-          return ret_arr;
-      }
+  public fetchNotes = async (userid: string) => {
+    if (userid) {
+      const data = {
+        userid: userid,
+      };
+      console.log("fetchingNotes");
+      const res = await fetch(this.url_fetchNote, {
+        method: "POST",
+        // mode: "no-cors",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      const sentences = json.Items;
+      const ret_arr = sentences.reduce(
+        (accumulater: any, currentValue: any) => {
+          if (currentValue.type === "note") {
+            accumulater.push(currentValue);
+          }
+          return accumulater;
+        },
+        []
+      );
+      return ret_arr;
+    }
   };
 
   // public deleteFavorite = async (url: string, data: { userid: string; chinese: string }) => {

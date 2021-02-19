@@ -1,13 +1,12 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { useTheme, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
-import { useTheme } from "@react-navigation/native";
 
 export default function content({ item, userid }) {
-  const colors = useTheme();
 
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
   async function setFavoriteItem(value) {
@@ -29,6 +28,7 @@ export default function content({ item, userid }) {
     <Icon
       name="bookmark"
       size={25}
+      color="#2b59c4"
       onPress={() => removeFavoriteItem(item.japanese)}
     />
   );

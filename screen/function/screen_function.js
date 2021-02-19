@@ -20,15 +20,15 @@ export async function translateFunction(text, toJapanese) {
 }
 
 export const getData = async (query, userid) => {
-  const res = (await new ChineseInterator().fetchLists(query)) ?? [];
+  let res = (await new ChineseInterator().fetchLists(query)) ?? [];
   if (!res) {
     return null;
   }
   if (userid) {
-    checkIsFavorite(res, userid);
-  } else {
+    res = checkIsFavorite(res, userid);
     return res;
   }
+  return res;
 };
 
 export const checkIsFavorite = async (value, userid) => {
