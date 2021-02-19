@@ -5,9 +5,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
+import FlipCard from "react-native-flip-card";
 
 export default function content({ item, userid }) {
-
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
   async function setFavoriteItem(value) {
     const res = new ChineseInterator().postFavorite(value, userid);
@@ -91,7 +91,15 @@ export default function content({ item, userid }) {
     toggleCard(value);
   };
 
-  return <>{front ? frontCard(item) : backCard(item)}</>;
+  // return <>{front ? frontCard(item) : backCard(item)}</>;
+  return (
+    <FlipCard flip={!front} flipHorizontal={true} flipVertical={false} friction={10}>
+      {/* Face Side */}
+      {frontCard(item)}
+      {/* Back Side */}
+      {backCard(item)}
+    </FlipCard>
+  );
 }
 
 const styles = StyleSheet.create({
