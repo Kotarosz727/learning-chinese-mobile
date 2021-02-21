@@ -39,12 +39,14 @@ export default class ChineseInterator {
   };
 
   public postFavorite = async (data: any, userid: string) => {
+    const created_at = Date.now();
     const mappeddata = {
       userid: userid,
       chinese: data.chinese,
       japanese: data.japanese,
       pinin: data.pinin,
       type: "favorite",
+      created_at: created_at,
     };
     console.log("posting favorite");
     try {
@@ -66,12 +68,15 @@ export default class ChineseInterator {
   };
 
   public postNote = async (data: any, userid: string) => {
+    const created_at = Date.now();
+
     const mappeddata = {
       userid: userid,
       chinese: data.mychinese,
       japanese: data.myjapanese,
       pinin: data.mypinyin,
       type: "note",
+      created_at: created_at,
     };
     try {
       const res = await fetch(this.url_postNote, {
@@ -212,14 +217,19 @@ export default class ChineseInterator {
   };
 
   public deleteFavorite = async (data: { userid: string; chinese: string }) => {
-    const res = await fetch(this.url_deleteFavorite, {
-      method: "DELETE",
-      headers: {
-        "content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    console.log("deleted");
+    console.log("data", data);
+    try {
+      const res = await fetch(this.url_deleteFavorite, {
+        method: "DELETE",
+        headers: {
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log("deleted");
+    } catch (e) {
+      console.log("error", e);
+    }
   };
 
   public deleteNote = async (data: { userid: string; chinese: string }) => {

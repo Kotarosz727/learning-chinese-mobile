@@ -4,14 +4,18 @@ import { useTheme, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
 import FlipCard from "react-native-flip-card";
 
 export default function content({ item, userid }) {
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
+  const [front, toggleCard] = useState(true);
+  const [isItem, setIsItem] = useState(item.chinese);
+
   async function setFavoriteItem(value) {
-    const res = new ChineseInterator().postFavorite(value, userid);
+    const res = await new ChineseInterator().postFavorite(value, userid);
     if (!res) {
       return <Text>ブックマークに失敗しました。</Text>;
     } else {
@@ -24,11 +28,21 @@ export default function content({ item, userid }) {
       userid: userid,
       chinese: item.chinese,
     };
-    new ChineseInterator().deleteFavorite(data);
-    setBookmarkStatus(false);
+    await new ChineseInterator().deleteFavorite(data);
+    if (item.type && item.type == "favorite") {
+      setIsItem(false);
+    } else {
+      setBookmarkStatus(false);
+    }
   }
-
-  const [front, toggleCard] = useState(true);
+  async function removeNote() {
+    const data = {
+      userid: userid,
+      chinese: item.chinese,
+    };
+    await new ChineseInterator().deleteNote(data);
+    setIsItem(false);
+  }
 
   const bookmark = (
     <Icon
@@ -40,6 +54,13 @@ export default function content({ item, userid }) {
   );
   const bookmarkEmpty = (
     <Icon name="bookmark-o" size={25} onPress={() => setFavoriteItem(item)} />
+  );
+  const deleteMark = (
+    <MaterialCommunityIcons
+      name="delete"
+      size={25}
+      onPress={() => removeNote()}
+    />
   );
   // const arrowRight = (
   //   <Icon5
@@ -86,13 +107,15 @@ export default function content({ item, userid }) {
         >
           {item.pinin}
         </Text>
-        {/* My単語帳画面ではブックマークは表示しない */}
+        {/* My単語帳画面ではブックマークアイコンではなくデリートアイコンを表示 */}
         {bookmarkStatus != "note" ? (
           <Text style={styles.bookmark}>
             {bookmarkStatus === true ? bookmark : bookmarkEmpty}
           </Text>
         ) : (
-          <Text></Text>
+          <Text Text style={styles.bookmark}>
+            {deleteMark}
+          </Text>
         )}
       </View>
     );
@@ -109,9 +132,9 @@ export default function content({ item, userid }) {
       friction={10}
     >
       {/* Face Side */}
-      {frontCard(item)}
+      {isItem ? frontCard(item) : <Text></Text>}
       {/* Back Side */}
-      {backCard(item)}
+      {isItem ? backCard(item) : <Text></Text>}
     </FlipCard>
   );
 }

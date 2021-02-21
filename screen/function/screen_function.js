@@ -36,12 +36,15 @@ export const checkIsFavorite = async (value, userid) => {
   const favoriteItems = await new ChineseInterator().fetchFavorites(userid);
 
   if (favoriteItems) {
-    const bookmarked = [];
+    const bookmarked_array = [];
+    
     favoriteItems.map((r) => {
-      bookmarked.push(r.chinese);
+      const chinese = r.chinese;
+      bookmarked_array.push(chinese);
     });
+
     value.map((v) => {
-      if (bookmarked.findIndex((item) => item === v.chinese) >= 0) {
+      if (bookmarked_array.findIndex((item) => item === v.chinese) >= 0) {
         v.bookmark = true;
       }
     });
