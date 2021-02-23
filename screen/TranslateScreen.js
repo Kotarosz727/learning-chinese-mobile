@@ -143,7 +143,7 @@ export default function TranslateScreen({ userid }) {
       ) : (
         <Text></Text>
       )}
-      <View style={{ position: "absolute", right: 50, bottom: -10 }}>
+      <View style={{ position: "absolute", right: 50, bottom: 0 }}>
         <Button title="翻訳" onPress={() => handleTranslate()} />
       </View>
     </View>

@@ -123,8 +123,10 @@ export default function App() {
 
   const sharedFunction = useMemo(() => ({
     toggleTheme: () => {
-      console.log("test");
       setIsDarkTheme(!isDarkTheme);
+    },
+    isDarkTheme: () => {
+      return isDarkTheme;
     },
   }));
 
@@ -200,7 +202,7 @@ export default function App() {
         mounted = false;
       };
     });
-    return <Data data={note} userid={userid} />;
+    return <Data data={note} userid={userid} type={"note"} />;
   }
 
   function SignInScreen() {

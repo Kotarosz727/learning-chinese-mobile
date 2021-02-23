@@ -47,18 +47,18 @@ export default function content({ item, userid }) {
   const bookmark = (
     <Icon
       name="bookmark"
-      size={25}
+      size={30}
       color="#2b59c4"
       onPress={() => removeFavoriteItem()}
     />
   );
   const bookmarkEmpty = (
-    <Icon name="bookmark-o" size={25} onPress={() => setFavoriteItem(item)} />
+    <Icon name="bookmark-o" size={30} onPress={() => setFavoriteItem(item)} />
   );
   const deleteMark = (
     <MaterialCommunityIcons
       name="delete"
-      size={25}
+      size={30}
       onPress={() => removeNote()}
     />
   );
@@ -67,7 +67,7 @@ export default function content({ item, userid }) {
   //     name="arrow-right"
   //     style={styles.arrowRight}
   //     onPress={() => handleToggle(!front)}
-  //     size={25}
+  //     size={30}
   //   />
   // );
   // const Volume = (
