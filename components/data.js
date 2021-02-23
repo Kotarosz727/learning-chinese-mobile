@@ -105,7 +105,7 @@ export default function data({ data, userid, type = null }) {
         ListFooterComponent={() => footer()}
         keyExtractor={(item, index) => index.toString()}
         data={pageData}
-        renderItem={({ item }) => <Content item={item} userid={userid} />}
+        renderItem={({ item, index }) => <Content item={item} userid={userid} index={index}/>}
       />
       {OverlayComponent}
       {type && type == "note" && <BarComponent />}

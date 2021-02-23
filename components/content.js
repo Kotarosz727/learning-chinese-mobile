@@ -9,7 +9,7 @@ import * as Speech from "expo-speech";
 import ChineseInterator from "../function/ChineseInterator";
 import FlipCard from "react-native-flip-card";
 
-export default function content({ item, userid }) {
+export default function content({ item, userid, index }) {
   const [bookmarkStatus, setBookmarkStatus] = useState(item.bookmark);
   const [front, toggleCard] = useState(true);
   const [isItem, setIsItem] = useState(item.chinese);
