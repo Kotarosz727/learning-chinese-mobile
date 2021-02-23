@@ -29,6 +29,7 @@ import {
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
+import SignUpComponent from "./screen/SignupScreen";
 import { DrawerContent } from "./screen/DrawerContent";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -134,6 +135,7 @@ export default function App() {
   const HomeStack = createStackNavigator();
   const TranslateStack = createStackNavigator();
   const SignInStack = createStackNavigator();
+  const SignUpStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
   const NoteStack = createStackNavigator();
 
@@ -205,8 +207,12 @@ export default function App() {
     return <Data data={note} userid={userid} type={"note"} />;
   }
 
-  function SignInScreen() {
-    return <SignInComponent />;
+  function SignInScreen({ navigation }) {
+    return <SignInComponent navigation={navigation} />;
+  }
+
+  function SignUpScreen({ navigation }) {
+    return <SignUpComponent navigation={navigation} />;
   }
 
   function getTitle(route) {
@@ -270,13 +276,13 @@ export default function App() {
       <SignInStack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#0f0f0f",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          // headerStyle: {
+          //   backgroundColor: "#0f0f0f",
+          // },
+          // headerTintColor: "#fff",
+          // headerTitleStyle: {
+          //   fontWeight: "bold",
+          // },
           headerLeft: () => (
             <Icon5
               name="bars"
@@ -289,6 +295,7 @@ export default function App() {
         }}
       >
         <SignInStack.Screen name="SignIn" component={SignInScreen} />
+        <SignUpStack.Screen name="SignUp" component={SignUpScreen} />
       </SignInStack.Navigator>
     );
   }

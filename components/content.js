@@ -43,7 +43,6 @@ export default function content({ item, userid, index }) {
     await new ChineseInterator().deleteNote(data);
     setIsItem(false);
   }
-
   const bookmark = (
     <Icon
       name="bookmark"
@@ -52,8 +51,10 @@ export default function content({ item, userid, index }) {
       onPress={() => removeFavoriteItem()}
     />
   );
-  const bookmarkEmpty = (
+  const bookmarkEmpty = userid ? (
     <Icon name="bookmark-o" size={30} onPress={() => setFavoriteItem(item)} />
+  ) : (
+    <Text></Text>
   );
   const deleteMark = (
     <MaterialCommunityIcons
