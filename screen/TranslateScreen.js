@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, TextInput } from "react-native";
+import { View } from "react-native";
+import { useTheme, Text, TextInput } from "react-native-paper";
 import { Button, Overlay, Input } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {translateFunction} from "./function/screen_function";
+import { translateFunction } from "./function/screen_function";
 import Pinyin from "chinese-to-pinyin";
 import * as Speech from "expo-speech";
-import ChineseInterator from '../function/ChineseInterator'
+import ChineseInterator from "../function/ChineseInterator";
 
 export default function TranslateScreen({ userid }) {
   const [translateToJapanese, translateToCheinese] = useState(true);
@@ -82,7 +83,6 @@ export default function TranslateScreen({ userid }) {
       </Overlay>
       <TextInput
         multiline={true}
-        textAlignVertical={"top"}
         numberOfLines={10}
         editable={true}
         placeholder={translateToJapanese ? "中国語" : "日本語"}
@@ -117,7 +117,6 @@ export default function TranslateScreen({ userid }) {
 
       <TextInput
         multiline={true}
-        textAlignVertical={"top"}
         numberOfLines={10}
         editable={false}
         placeholder={translateToJapanese ? "日本語" : "中国語"}
@@ -144,7 +143,7 @@ export default function TranslateScreen({ userid }) {
       ) : (
         <Text></Text>
       )}
-      <View style={{ position: "absolute", right: 50, bottom: -10 }}>
+      <View style={{ position: "absolute", right: 50, bottom: 0 }}>
         <Button title="翻訳" onPress={() => handleTranslate()} />
       </View>
     </View>

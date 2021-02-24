@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput } from "react-native";
-import { Button, Overlay, Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Amplify, { Auth } from "aws-amplify";
 
-export default function SignInScreen({navigation}) {
+export default function HomeScreen({navigation}) {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Icon.Button
@@ -15,7 +14,7 @@ export default function SignInScreen({navigation}) {
         onPress={() => Auth.federatedSignIn({ provider: "Facebook" })}
       >
         <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-          FaceBookアカウントでログイン
+          FaceBookアカウントで登録
         </Text>
       </Icon.Button>
       <View style={{ marginTop: 30 }}>
@@ -27,7 +26,7 @@ export default function SignInScreen({navigation}) {
           onPress={() => Auth.federatedSignIn({ provider: "Google" })}
         >
           <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-            Googleアカウントでログイン
+            Googleアカウントで登録
           </Text>
         </Icon.Button>
       </View>
@@ -41,11 +40,11 @@ export default function SignInScreen({navigation}) {
           onPress={() => Auth.federatedSignIn({ provider: "Amazon" })}
         >
           <Text style={{ fontFamily: "Arial", fontSize: 16, color: "white" }}>
-            Amazonアカウントでログイン
+            Amazonアカウントで登録
           </Text>
         </Icon.Button>
       </View>
-      <Text onPress={() => navigation.navigate("SignUp")}>Create account</Text>
+      <Text onPress={() => navigation.navigate("SignIn")}>戻る</Text>
     </View>
   );
 }

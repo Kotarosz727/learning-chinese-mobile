@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { StyleSheet, View } from "react-native";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -9,10 +9,22 @@ import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Drawer, Text, Title } from "react-native-paper";
+import {
+  useTheme,
+  Drawer,
+  Text,
+  Title,
+  TouchableRipple,
+  Switch,
+} from "react-native-paper";
 import { logout } from "./function/screen_function";
+import Amplify, { Auth, Hub } from "aws-amplify";
+import { SharedFunction } from "../components/context";
 
 export function DrawerContent({ props, username }) {
+  const { toggleTheme } = useContext(SharedFunction);
+  const paperTheme = useTheme();
+
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
@@ -31,48 +43,80 @@ export function DrawerContent({ props, username }) {
         {username ? (
           <>
             <DrawerItem
-              icon={() => <Ionicons name="home-outline" size={25} />}
+              icon={({ color, size }) => (
+                <MaterialCommunityIcons name="home" color={color} size={25} />
+              )}
               label="ホーム"
               onPress={() => props.navigation.navigate("ホーム")}
             />
             <DrawerItem
-              icon={() => <Ionicons name="bookmarks-outline" size={25} />}
+              icon={({ color, size }) => (
+                <MaterialCommunityIcons
+                  color={color}
+                  name="bookmark-multiple"
+                  size={25}
+                />
+              )}
               label="ブックマーク"
               onPress={() => props.navigation.navigate("ブックマーク")}
             />
             <DrawerItem
-              icon={() => <MaterialIcons name="translate" size={25} />}
+              icon={({ color }) => (
+                <MaterialIcons color={color} name="translate" size={25} />
+              )}
               label="翻訳"
               onPress={() => props.navigation.navigate("翻訳")}
             />
             <DrawerItem
-              icon={() => <Ionicons name="folder-outline" size={25} />}
+              icon={({ color }) => (
+                <Ionicons color={color} name="folder" size={25} />
+              )}
               label="my単語帳"
               onPress={() => props.navigation.navigate("my単語帳")}
             />
             <DrawerItem
-              icon={() => (
-                <MaterialCommunityIcons name="exit-to-app" size={25} />
+              icon={({ color }) => (
+                <MaterialCommunityIcons
+                  color={color}
+                  name="exit-to-app"
+                  size={25}
+                />
               )}
               label="SignOut"
-              onPress={() => logout()}
+              onPress={() => Auth.signOut()}
             />
           </>
         ) : (
           <>
             <DrawerItem
-              icon={() => <Ionicons name="home-outline" size={25} />}
+              icon={({ color }) => <Ionicons color={color} name="home" size={25} />}
               label="ホーム"
               onPress={() => props.navigation.navigate("ホーム")}
             />
             <DrawerItem
-              icon={() => <Ionicons name="log-in-outline" size={25} />}
+              icon={({ color }) => <Ionicons color={color} name="log-in" size={25} />}
               label="SignIn"
               onPress={() => props.navigation.navigate("SignIn")}
             />
           </>
         )}
       </DrawerContentScrollView>
+      <TouchableRipple onPress={() => toggleTheme()}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            marginBottom: 30,
+          }}
+        >
+          <Text>ダークモード</Text>
+          <View pointerEvents="none">
+            <Switch value={paperTheme.dark} />
+          </View>
+        </View>
+      </TouchableRipple>
     </View>
   );
 }

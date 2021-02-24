@@ -8,21 +8,18 @@ export default function HomeScreen({ navigation, username }) {
       <Button
         title="基本120文"
         onPress={() => navigation.navigate("content", { query: "120" })}
-        type="outline"
         raised={true}
         containerStyle={{ marginTop: 100, marginBottom: 40, width: 300 }}
       />
       <Button
         title="日常会話"
         onPress={() => navigation.navigate("content", { query: "nichijo" })}
-        type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
       />
       <Button
         title="動詞"
         onPress={() => navigation.navigate("content", { query: "dousa" })}
-        type="outline"
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
       />

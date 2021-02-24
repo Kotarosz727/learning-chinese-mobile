@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, TextInput } from "react-native";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Linking,
+  Platform,
+} from "react-native";
+import {
+  NavigationContainer,
+  useFocusEffect,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Data from "./components/data";
-import Amplify, { Auth } from "aws-amplify";
+import Amplify, { Auth, Hub } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import {
   getData,
@@ -17,50 +29,113 @@ import {
 import HomeComponent from "./screen/HomeScreen";
 import TranslateComponent from "./screen/TranslateScreen";
 import SignInComponent from "./screen/SigninScreen";
+import SignUpComponent from "./screen/SignupScreen";
 import { DrawerContent } from "./screen/DrawerContent";
-Amplify.configure(awsconfig);
+import * as WebBrowser from "expo-web-browser";
+import {
+  Drawer,
+  Provider as PaperProvider,
+  DarkTheme as PaperDarkTheme,
+  DefaultTheme as PaperDefaultTheme,
+} from "react-native-paper";
+import { SharedFunction } from "./components/context";
 
-// async function urlOpener(url, redirectUrl) {
-//   const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
-//     url,
-//     redirectUrl
-//   );
+// Amplify.configure(awsconfig);
 
-//   if (type === "success" && Platform.OS === "ios") {
-//     WebBrowser.dismissBrowser();
-//     return Linking.openURL(newUrl);
-//   }
-// }
+async function urlOpener(url, redirectUrl) {
+  const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
+    url,
+    redirectUrl
+  );
 
-// Amplify.configure({
-//   ...awsconfig,
-//   oauth: {
-//     ...awsconfig.oauth,
-//     urlOpener,
-//   },
-// });
+  if (type === "success" && Platform.OS === "ios") {
+    WebBrowser.dismissBrowser();
+    return Linking.openURL(newUrl);
+  }
+}
+
+Amplify.configure({
+  ...awsconfig,
+  oauth: {
+    ...awsconfig.oauth,
+    urlOpener,
+  },
+});
 
 export default function App() {
+  const [user, setUser] = useState("");
   const [username, setUsername] = useState("");
   const [userid, setUserid] = useState(null);
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
   const [note, setNote] = useState([]);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+  const CustomDefaultTheme = {
+    ...DefaultTheme,
+    ...PaperDefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      ...PaperDefaultTheme.colors,
+      background: "#ffffff",
+      text: "#333333",
+    },
+  };
+
+  const CustomDarkTheme = {
+    ...DarkTheme,
+    ...PaperDarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      ...PaperDarkTheme.colors,
+      background: "#333333",
+      text: "#ffffff",
+    },
+  };
+
+  const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
 
   useEffect(() => {
+    Hub.listen("auth", ({ payload: { event, data } }) => {
+      switch (event) {
+        case "signIn":
+          setUser(data);
+          break;
+        case "signOut":
+          setUser("");
+          setUsername("");
+          setUserid("");
+          break;
+      }
+    });
     Auth.currentAuthenticatedUser()
       .then((user) => {
-        setUsername(user.attributes.name);
-        setUserid(user.attributes.sub);
+        if (user) {
+          setUsername(user.attributes.name);
+          setUserid(user.attributes.sub);
+        }
       })
-      .catch((err) => console.log("error", err));
-    console.log("mounted");
-  }, []);
+      .catch((err) => {
+        // setUsername("");
+        // setUserid("");
+        console.log("error", err);
+      });
+  });
+
+  const sharedFunction = useMemo(() => ({
+    toggleTheme: () => {
+      setIsDarkTheme(!isDarkTheme);
+    },
+    isDarkTheme: () => {
+      return isDarkTheme;
+    },
+  }));
 
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
   const TranslateStack = createStackNavigator();
   const SignInStack = createStackNavigator();
+  const SignUpStack = createStackNavigator();
   const FavoriteStack = createStackNavigator();
   const NoteStack = createStackNavigator();
 
@@ -129,11 +204,15 @@ export default function App() {
         mounted = false;
       };
     });
-    return <Data data={note} userid={userid} />;
+    return <Data data={note} userid={userid} type={"note"} />;
   }
 
-  function SignInScreen() {
-    return <SignInComponent />;
+  function SignInScreen({ navigation }) {
+    return <SignInComponent navigation={navigation} />;
+  }
+
+  function SignUpScreen({ navigation }) {
+    return <SignUpComponent navigation={navigation} />;
   }
 
   function getTitle(route) {
@@ -156,28 +235,22 @@ export default function App() {
           component={HomeScreen}
           options={() => ({
             title: "ホーム",
-            headerStyle: {
-              backgroundColor: "#0f0f0f",
-            },
-            headerTintColor: "#fff",
+            // headerStyle: {
+            //   backgroundColor: "#0f0f0f",
+            // },
+            // headerTintColor: "#fff",
             headerTitleStyle: {
               fontWeight: "bold",
             },
-            headerLeft: () => (
+            headerLeft: ({ color }) => (
               <Icon5
                 name="bars"
                 size={23}
-                color={"white"}
+                color={color}
                 style={{ marginLeft: 13 }}
                 onPress={() => navigation.openDrawer()}
               />
             ),
-            // headerRight: () =>
-            //   username ? (
-            //     <Text style={{ color: "white" }}>您好!{username}</Text>
-            //   ) : (
-            //     <Text></Text>
-            //   ),
           })}
         />
         <HomeStack.Screen
@@ -185,10 +258,10 @@ export default function App() {
           component={ContentScreen}
           options={({ route }) => ({
             title: getTitle(route),
-            headerStyle: {
-              backgroundColor: "#0f0f0f",
-            },
-            headerTintColor: "#fff",
+            // headerStyle: {
+            //   backgroundColor: "#0f0f0f",
+            // },
+            // headerTintColor: "#fff",
             headerTitleStyle: {
               fontWeight: "bold",
             },
@@ -203,18 +276,18 @@ export default function App() {
       <SignInStack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#0f0f0f",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
+          // headerStyle: {
+          //   backgroundColor: "#0f0f0f",
+          // },
+          // headerTintColor: "#fff",
+          // headerTitleStyle: {
+          //   fontWeight: "bold",
+          // },
           headerLeft: () => (
             <Icon5
               name="bars"
               size={23}
-              color={"white"}
+              // color={"white"}
               style={{ marginLeft: 13 }}
               onPress={() => navigation.openDrawer()}
             />
@@ -222,6 +295,7 @@ export default function App() {
         }}
       >
         <SignInStack.Screen name="SignIn" component={SignInScreen} />
+        <SignUpStack.Screen name="SignUp" component={SignUpScreen} />
       </SignInStack.Navigator>
     );
   }
@@ -231,10 +305,10 @@ export default function App() {
       <FavoriteStack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#0f0f0f",
-          },
-          headerTintColor: "#fff",
+          // headerStyle: {
+          //   backgroundColor: "#0f0f0f",
+          // },
+          // headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
@@ -242,7 +316,7 @@ export default function App() {
             <Icon5
               name="bars"
               size={23}
-              color={"white"}
+              // color={"white"}
               style={{ marginLeft: 13 }}
               onPress={() => navigation.openDrawer()}
             />
@@ -254,10 +328,10 @@ export default function App() {
           component={FavoriteScreen}
           options={({ route }) => ({
             title: "ブックマーク",
-            headerStyle: {
-              backgroundColor: "#0f0f0f",
-            },
-            headerTintColor: "#fff",
+            // headerStyle: {
+            //   backgroundColor: "#0f0f0f",
+            // },
+            // headerTintColor: "#fff",
             headerTitleStyle: {
               fontWeight: "bold",
             },
@@ -272,10 +346,10 @@ export default function App() {
       <TranslateStack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#0f0f0f",
-          },
-          headerTintColor: "#fff",
+          // headerStyle: {
+          //   backgroundColor: "#0f0f0f",
+          // },
+          // headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
@@ -283,7 +357,7 @@ export default function App() {
             <Icon5
               name="bars"
               size={23}
-              color={"white"}
+              // color={"white"}
               style={{ marginLeft: 13 }}
               onPress={() => navigation.openDrawer()}
             />
@@ -295,10 +369,10 @@ export default function App() {
           component={TranslateScreen}
           options={({ route }) => ({
             title: "翻訳",
-            headerStyle: {
-              backgroundColor: "#0f0f0f",
-            },
-            headerTintColor: "#fff",
+            // headerStyle: {
+            //   backgroundColor: "#0f0f0f",
+            // },
+            // headerTintColor: "#fff",
             headerTitleStyle: {
               fontWeight: "bold",
             },
@@ -313,10 +387,10 @@ export default function App() {
       <NoteStack.Navigator
         initialRouteName="Home"
         screenOptions={{
-          headerStyle: {
-            backgroundColor: "#0f0f0f",
-          },
-          headerTintColor: "#fff",
+          // headerStyle: {
+          //   backgroundColor: "#0f0f0f",
+          // },
+          // headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
@@ -324,7 +398,7 @@ export default function App() {
             <Icon5
               name="bars"
               size={23}
-              color={"white"}
+              // color={"white"}
               style={{ marginLeft: 13 }}
               onPress={() => navigation.openDrawer()}
             />
@@ -336,10 +410,10 @@ export default function App() {
           component={NoteScreen}
           options={({ route }) => ({
             title: "My単語帳",
-            headerStyle: {
-              backgroundColor: "#0f0f0f",
-            },
-            headerTintColor: "#fff",
+            // headerStyle: {
+            //   backgroundColor: "#0f0f0f",
+            // },
+            // headerTintColor: "#fff",
             headerTitleStyle: {
               fontWeight: "bold",
             },
@@ -350,67 +424,79 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Drawer.Navigator drawerContent={(props) => <DrawerContent props={props} username={username}/>}>
-        {username ? (
-          <>
-            <Drawer.Screen
-              name="ホーム"
-              component={HomeStackScreen}
-              options={{
-                drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
-              }}
-            />
-            <Drawer.Screen
-              name="ブックマーク"
-              component={FavoriteStackScreen}
-              options={{
-                drawerIcon: ({}) => (
-                  <Ionicons name="bookmarks-outline" size={20} />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="翻訳"
-              component={TranslateStackScreen}
-              options={{
-                drawerIcon: ({}) => (
-                  <MaterialIcons name="translate" size={20} />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="my単語帳"
-              component={NoteStackScreen}
-              options={{
-                drawerIcon: ({}) => (
-                  <Ionicons name="folder-outline" size={20} />
-                ),
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <Drawer.Screen
-              name="ホーム"
-              component={HomeStackScreen}
-              options={{
-                drawerIcon: ({}) => <Ionicons name="home-outline" size={20} />,
-              }}
-            />
-            <Drawer.Screen
-              name="SignIn"
-              component={SignInStackScreen}
-              options={{
-                drawerIcon: ({}) => (
-                  <Ionicons name="log-in-outline" size={20} />
-                ),
-              }}
-            />
-          </>
-        )}
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <SharedFunction.Provider value={sharedFunction}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={theme}>
+          <Drawer.Navigator
+            drawerContent={(props) => (
+              <DrawerContent props={props} username={username} />
+            )}
+          >
+            {username ? (
+              <>
+                <Drawer.Screen
+                  name="ホーム"
+                  component={HomeStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <Ionicons name="home-outline" size={20} />
+                    ),
+                  }}
+                />
+                <Drawer.Screen
+                  name="ブックマーク"
+                  component={FavoriteStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <Ionicons name="bookmarks-outline" size={20} />
+                    ),
+                  }}
+                />
+                <Drawer.Screen
+                  name="翻訳"
+                  component={TranslateStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <MaterialIcons name="translate" size={20} />
+                    ),
+                  }}
+                />
+                <Drawer.Screen
+                  name="my単語帳"
+                  component={NoteStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <Ionicons name="folder-outline" size={20} />
+                    ),
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Drawer.Screen
+                  name="ホーム"
+                  component={HomeStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <Ionicons name="home-outline" size={20} />
+                    ),
+                  }}
+                />
+                <Drawer.Screen
+                  name="SignIn"
+                  component={SignInStackScreen}
+                  options={{
+                    drawerIcon: ({}) => (
+                      <Ionicons name="log-in-outline" size={20} />
+                    ),
+                  }}
+                />
+              </>
+            )}
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </SharedFunction.Provider>
   );
 }
 

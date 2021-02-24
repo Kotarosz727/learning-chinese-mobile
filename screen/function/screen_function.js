@@ -20,17 +20,15 @@ export async function translateFunction(text, toJapanese) {
 }
 
 export const getData = async (query, userid) => {
-  const res = (await new ChineseInterator().fetchLists(query)) ?? [];
+  let res = (await new ChineseInterator().fetchLists(query)) ?? [];
   if (!res) {
     return null;
   }
-  let ret_item = [];
   if (userid) {
-    ret_item = checkIsFavorite(res, userid);
-  } else {
-    ret_item = setData(res);
+    res = checkIsFavorite(res, userid);
+    return res;
   }
-  return ret_item;
+  return res;
 };
 
 export const checkIsFavorite = async (value, userid) => {
@@ -38,12 +36,15 @@ export const checkIsFavorite = async (value, userid) => {
   const favoriteItems = await new ChineseInterator().fetchFavorites(userid);
 
   if (favoriteItems) {
-    const bookmarked = [];
+    const bookmarked_array = [];
+    
     favoriteItems.map((r) => {
-      bookmarked.push(r.chinese);
+      const chinese = r.chinese;
+      bookmarked_array.push(chinese);
     });
+
     value.map((v) => {
-      if (bookmarked.findIndex((item) => item === v.chinese) >= 0) {
+      if (bookmarked_array.findIndex((item) => item === v.chinese) >= 0) {
         v.bookmark = true;
       }
     });
