@@ -23,6 +23,30 @@ export default function HomeScreen({ navigation, username }) {
         raised={true}
         containerStyle={{ marginBottom: 40, width: 300 }}
       />
+      <Button
+        title="挨拶"
+        onPress={() => navigation.navigate("content", { query: "aisatsu" })}
+        raised={true}
+        containerStyle={{ marginBottom: 40, width: 300 }}
+      />
+      <Button
+        title="比較"
+        onPress={() => navigation.navigate("content", { query: "hikaku" })}
+        raised={true}
+        containerStyle={{ marginBottom: 40, width: 300 }}
+      />
+      <Button
+        title="自己紹介"
+        onPress={() => navigation.navigate("content", { query: "jikosyoukai" })}
+        raised={true}
+        containerStyle={{ marginBottom: 40, width: 300 }}
+      />
+      <Button
+        title="疑問文"
+        onPress={() => navigation.navigate("content", { query: "gimon" })}
+        raised={true}
+        containerStyle={{ marginBottom: 40, width: 300 }}
+      />
     </View>
   );
 }

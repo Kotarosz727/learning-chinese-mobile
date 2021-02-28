@@ -111,10 +111,10 @@ export function DrawerContent({ props, username }) {
             marginBottom: 30,
           }}
         >
-          <Text>ダークモード</Text>
+          {/* <Text>ダークモード</Text>
           <View pointerEvents="none">
             <Switch value={paperTheme.dark} />
-          </View>
+          </View> */}
         </View>
       </TouchableRipple>
     </View>

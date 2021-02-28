@@ -12,7 +12,7 @@ export default function data({ data, userid, type = null }) {
   const [endPage, setEndPage] = useState(20);
   const [pageData, setPageData] = useState(data);
   const [currentPage, setCurrentPage] = useState(0);
-  const { isDarkTheme } = useContext(SharedFunction);
+  // const { isDarkTheme } = useContext(SharedFunction);
   const lastPage = Math.floor(data / perPage);
   const [visible, setVisible] = useState(false);
   const [japanese, setJapanese] = useState("");
@@ -79,10 +79,7 @@ export default function data({ data, userid, type = null }) {
   function BarComponent() {
     return (
       <View style={{ marginTop: 50 }}>
-        <Appbar
-          style={isDarkTheme() ? styles.bottomDark : styles.bottomLight}
-          dark={true}
-        >
+        <Appbar style={styles.bottomDark} dark={true}>
           <Appbar.Action
             icon="plus-circle"
             onPress={() => setVisible(!visible)}
@@ -91,7 +88,7 @@ export default function data({ data, userid, type = null }) {
               marginRight: "auto",
               marginLeft: "auto",
             }}
-            color={isDarkTheme() ? "#196fd1" : "#c92a47"}
+            color={"#196fd1"}
             size={55}
           />
         </Appbar>
@@ -105,7 +102,9 @@ export default function data({ data, userid, type = null }) {
         ListFooterComponent={() => footer()}
         keyExtractor={(item, index) => index.toString()}
         data={pageData}
-        renderItem={({ item, index }) => <Content item={item} userid={userid} index={index}/>}
+        renderItem={({ item, index }) => (
+          <Content item={item} userid={userid} index={index} />
+        )}
       />
       {OverlayComponent}
       {type && type == "note" && <BarComponent />}

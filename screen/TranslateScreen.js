@@ -59,10 +59,11 @@ export default function TranslateScreen({ userid }) {
   return (
     <View
       style={{
-        display: "flex",
-        justifyContent: "center",
+        flex: 1,
         alignItems: "center",
-        width: 400,
+        // justifyContent: "center",
+        marginBottom: 20,
+        // width: 400,
       }}
     >
       <Overlay
@@ -143,7 +144,7 @@ export default function TranslateScreen({ userid }) {
       ) : (
         <Text></Text>
       )}
-      <View style={{ position: "absolute", right: 50, bottom: 0 }}>
+      <View>
         <Button title="翻訳" onPress={() => handleTranslate()} />
       </View>
     </View>

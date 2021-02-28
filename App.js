@@ -69,7 +69,7 @@ export default function App() {
   const [data, setData] = useState([]);
   const [favorite, setFavorite] = useState([]);
   const [note, setNote] = useState([]);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   const CustomDefaultTheme = {
     ...DefaultTheme,
@@ -93,7 +93,7 @@ export default function App() {
     },
   };
 
-  const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
+  const theme = CustomDarkTheme;
 
   useEffect(() => {
     Hub.listen("auth", ({ payload: { event, data } }) => {
@@ -122,15 +122,15 @@ export default function App() {
       });
   });
 
-  const sharedFunction = useMemo(() => ({
-    toggleTheme: () => {
-      setIsDarkTheme(!isDarkTheme);
-    },
-    isDarkTheme: () => {
-      return isDarkTheme;
-    },
-  }));
-
+  // const sharedFunction = useMemo(() => ({
+  //   toggleTheme: () => {
+  //     setIsDarkTheme(!isDarkTheme);
+  //   },
+  //   isDarkTheme: () => {
+  //     return isDarkTheme;
+  //   },
+  // }));
+  const sharedFunction = isDarkTheme;
   const Drawer = createDrawerNavigator();
   const HomeStack = createStackNavigator();
   const TranslateStack = createStackNavigator();
@@ -224,6 +224,14 @@ export default function App() {
         return "日常会話";
       case "dousa":
         return "動詞";
+      case "aisatsu":
+        return "挨拶";
+      case "hikaku":
+        return "比較";
+      case "jikosyoukai":
+        return "自己紹介";
+      case "gimon":
+        return "疑問文";
     }
   }
 
