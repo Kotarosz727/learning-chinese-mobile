@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import { useTheme, Text } from "react-native-paper";
+import { useTheme, Text, TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -82,7 +82,7 @@ export default function content({ item, userid, index }) {
   const frontCard = (item) => {
     return (
       <View style={styles.item}>
-        <Text style={styles.content} onPress={() => handleToggle(!front)}>
+        <Text style={styles.content} selectable onPress={() => handleToggle(!front)}>
           {item.japanese}
         </Text>
         {/* My単語帳画面ではブックマークは表示しない */}
@@ -100,7 +100,7 @@ export default function content({ item, userid, index }) {
     return (
       <View style={styles.item}>
         <View style={styles.content} onPress={() => handleToggle(!front)}>
-          <Text style={styles.content}>{item.chinese}</Text>
+          <Text selectable style={styles.content}>{item.chinese}</Text>
         </View>
         <Text
           style={styles.pinin}
